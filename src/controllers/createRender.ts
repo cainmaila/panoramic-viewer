@@ -1,10 +1,18 @@
 import { fromEvent } from 'rxjs';
-import { map, startWith, scan, distinctUntilChanged } from 'rxjs/operators';
+import {
+  map,
+  filter,
+  startWith,
+  scan,
+  distinctUntilChanged,
+} from 'rxjs/operators';
 import * as THREE from 'three';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
 import { cameraFovController } from './cameraFovController';
+import { addSpriteController } from './addSpriteController';
 import { animationFrames$ } from './observables/animationFramesObservable';
+import { pointerupObservable } from './observables/pointerupObservable';
 /**
  * THREE renderer init
  * @param view
@@ -55,6 +63,14 @@ export function sceneInit(view: Element | null): SceneInit {
   //zoom fov
   const cameraFovSubscription = cameraFovController(camera);
 
+  //cast
+  const addSpritSubscription = addSpriteController(
+    renderer,
+    camera,
+    scene,
+    sphere,
+  );
+
   return {
     scene,
     camera,
@@ -63,6 +79,7 @@ export function sceneInit(view: Element | null): SceneInit {
       onResizeOb.unsubscribe();
       animationFramesSubscription.unsubscribe();
       cameraFovSubscription.unsubscribe();
+      addSpritSubscription.unsubscribe();
     },
   };
 }
