@@ -12,6 +12,10 @@ const Home = () => {
     const { unsubscribe } = sceneInit(document.getElementById('View'));
     return unsubscribe;
   }, []);
-  return <MyHome id="View"></MyHome>;
+  return (
+    <>
+      <MyHome id="View"></MyHome>
+    </>
+  );
 };
 export default Home;
