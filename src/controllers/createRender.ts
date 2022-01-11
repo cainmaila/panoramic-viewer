@@ -1,9 +1,9 @@
 // import { Subject, connectable } from 'rxjs';
 // import { map } from 'rxjs/operators';
 import * as THREE from 'three';
+import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
 import { animationFrames$ } from './observables/animationFramesObservable';
-
 /**
  * THREE renderer init
  * @param view
@@ -30,12 +30,14 @@ export function sceneInit(view: Element | null): SceneInit {
   const cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
 
+  //controls
+  const controls = new OrbitControls(camera, renderer.domElement);
+
   //resize
   const onResizeOb = rendererResize(view, renderer, camera);
   //animationFrames
   const animationFramesSubscription = animationFrames$.subscribe((_time) => {
-    cube.rotateY(_time);
-    cube.rotateZ(_time);
+    controls.update();
     renderer.render(scene, camera);
   });
   animationFrames$.connect();
