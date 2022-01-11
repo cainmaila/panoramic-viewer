@@ -1,8 +1,12 @@
-// export function cameraFovController<T>(a: T, camera: THREE.PerspectiveCamera) {}
-
 import { fromEvent } from 'rxjs';
 import { map, startWith, scan, distinctUntilChanged } from 'rxjs/operators';
 
+/**
+ * camera Fov Controller
+ * @export
+ * @param {THREE.PerspectiveCamera} camera
+ * @return {Subscription}
+ */
 export function cameraFovController(camera: THREE.PerspectiveCamera) {
   const mousewheelObserver = fromEvent(window, 'mousewheel').pipe(
     map((_e) => {
