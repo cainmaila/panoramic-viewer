@@ -1,4 +1,4 @@
-import { fromEvent } from 'rxjs';
+// import { fromEvent } from 'rxjs';
 // import {
 //   map,
 //   filter,
@@ -6,7 +6,16 @@ import { fromEvent } from 'rxjs';
 //   scan,
 //   distinctUntilChanged,
 // } from 'rxjs/operators';
-import * as THREE from 'three';
+// import * as THREE from 'three';
+import {
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderer,
+  SphereGeometry,
+  MeshBasicMaterial,
+  TextureLoader,
+  Mesh,
+} from 'three';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
 import { cameraFovController } from './cameraFovController';
@@ -19,8 +28,8 @@ import { animationFrames$ } from './observables/animationFramesObservable';
  */
 export function sceneInit(view: Element | null): SceneInit {
   if (!view) throw new Error('view can not null!');
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
+  const scene = new Scene();
+  const camera = new PerspectiveCamera(
     75,
     view.clientWidth / view.clientHeight,
     0.1,
@@ -29,17 +38,17 @@ export function sceneInit(view: Element | null): SceneInit {
   camera.position.set(1, 0, 0);
   // const light = new THREE.AmbientLight(0xffffff, 1); // soft white light
   // scene.add(light);
-  const renderer = new THREE.WebGLRenderer();
+  const renderer = new WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
   view.appendChild(renderer.domElement);
   //demo
 
-  const sphereGeometry = new THREE.SphereGeometry(500, 50, 50);
+  const sphereGeometry = new SphereGeometry(500, 50, 50);
   sphereGeometry.scale(-1, 1, 1);
-  const sphereMaterial = new THREE.MeshBasicMaterial({
-    map: new THREE.TextureLoader().load('./pcx.jpg'),
+  const sphereMaterial = new MeshBasicMaterial({
+    map: new TextureLoader().load('./pcx.jpg'),
   });
-  const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+  const sphere = new Mesh(sphereGeometry, sphereMaterial);
   scene.add(sphere);
 
   //controls
