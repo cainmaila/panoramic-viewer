@@ -1,4 +1,4 @@
-import { Subject, connectable } from 'rxjs';
+// import { Subject, connectable } from 'rxjs';
 // import { map } from 'rxjs/operators';
 import * as THREE from 'three';
 import { rendererResize } from './renderResizeController';
