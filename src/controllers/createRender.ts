@@ -1,5 +1,5 @@
-// import { Subject, connectable } from 'rxjs';
-// import { map } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
+import { map, startWith, scan, distinctUntilChanged } from 'rxjs/operators';
 import * as THREE from 'three';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
@@ -19,8 +19,8 @@ export function sceneInit(view: Element | null): SceneInit {
     1000,
   );
   camera.position.set(1, 0, 0);
-  const light = new THREE.AmbientLight(0xffffff, 1); // soft white light
-  scene.add(light);
+  // const light = new THREE.AmbientLight(0xffffff, 1); // soft white light
+  // scene.add(light);
   const renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
   view.appendChild(renderer.domElement);
@@ -34,14 +34,13 @@ export function sceneInit(view: Element | null): SceneInit {
   const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
   scene.add(sphere);
 
-  // const geometry = new THREE.BoxGeometry();
-  // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-  // const cube = new THREE.Mesh(geometry, material);
-  // scene.add(cube);
-
   //controls
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 0, 0);
+  controls.rotateSpeed = -0.2;
+  controls.panSpeed = 0;
+  controls.zoomSpeed = 0;
+  controls.enableDamping = true;
 
   //resize
   const onResizeOb = rendererResize(view, renderer, camera);
@@ -51,6 +50,24 @@ export function sceneInit(view: Element | null): SceneInit {
     renderer.render(scene, camera);
   });
   animationFrames$.connect();
+
+  const mousewheelObserver = fromEvent(window, 'mousewheel').pipe(
+    map((_e) => {
+      const e = <WheelEvent>_e;
+      return e.deltaY > 0 ? 1 : -1;
+    }),
+    startWith(75), //camera.fov def
+    scan((a: number, b: number) => {
+      const _sum = a + b;
+      return _sum >= 120 ? 120 : _sum <= 45 ? 45 : _sum;
+    }),
+    distinctUntilChanged(),
+  );
+  mousewheelObserver.subscribe((_num: number) => {
+    camera.fov = _num;
+    camera.updateProjectionMatrix();
+  });
+
   return {
     scene,
     camera,
