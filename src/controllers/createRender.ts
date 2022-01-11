@@ -3,6 +3,7 @@ import { map, startWith, scan, distinctUntilChanged } from 'rxjs/operators';
 import * as THREE from 'three';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
+import { cameraFovController } from './cameraFovController';
 import { animationFrames$ } from './observables/animationFramesObservable';
 /**
  * THREE renderer init
@@ -51,22 +52,8 @@ export function sceneInit(view: Element | null): SceneInit {
   });
   animationFrames$.connect();
 
-  const mousewheelObserver = fromEvent(window, 'mousewheel').pipe(
-    map((_e) => {
-      const e = <WheelEvent>_e;
-      return e.deltaY > 0 ? 1 : -1;
-    }),
-    startWith(75), //camera.fov def
-    scan((a: number, b: number) => {
-      const _sum = a + b;
-      return _sum >= 120 ? 120 : _sum <= 45 ? 45 : _sum;
-    }),
-    distinctUntilChanged(),
-  );
-  mousewheelObserver.subscribe((_num: number) => {
-    camera.fov = _num;
-    camera.updateProjectionMatrix();
-  });
+  //zoom fov
+  const cameraFovSubscription = cameraFovController(camera);
 
   return {
     scene,
@@ -75,6 +62,7 @@ export function sceneInit(view: Element | null): SceneInit {
     unsubscribe: () => {
       onResizeOb.unsubscribe();
       animationFramesSubscription.unsubscribe();
+      cameraFovSubscription.unsubscribe();
     },
   };
 }
