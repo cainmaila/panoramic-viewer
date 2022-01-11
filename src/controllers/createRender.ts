@@ -1,7 +1,8 @@
-import { animationFrames, Subject, connectable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Subject, connectable } from 'rxjs';
+// import { map } from 'rxjs/operators';
 import * as THREE from 'three';
 import { rendererResize } from './renderResizeController';
+import { animationFrames$ } from './observables/animationFramesObservable';
 
 /**
  * THREE renderer init
@@ -32,13 +33,6 @@ export function sceneInit(view: Element | null): SceneInit {
   //resize
   const onResizeOb = rendererResize(view, renderer, camera);
   //animationFrames
-  const clock = new THREE.Clock();
-  const animationFramesObservable = animationFrames().pipe(
-    map(() => clock.getDelta()),
-  );
-  const animationFrames$ = connectable(animationFramesObservable, {
-    connector: () => new Subject(),
-  });
   const animationFramesSubscription = animationFrames$.subscribe((_time) => {
     cube.rotateY(_time);
     cube.rotateZ(_time);
