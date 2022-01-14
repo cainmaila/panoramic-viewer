@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 
 const MyHome = styled.div`
@@ -6,15 +6,27 @@ const MyHome = styled.div`
   overflow: hidden;
 `;
 import { sceneInit } from './controllers/createRender';
+import Panoramic from './controllers/panoramic_main';
+
+import TopUi from './components/TopUi';
 
 const Home = () => {
+  const [panoramic] = useState(new Panoramic());
+  const [pcxUrl, setPcxUrl] = useState('pcx.jpg');
+
   useEffect(() => {
-    const { unsubscribe } = sceneInit(document.getElementById('View'));
-    return unsubscribe;
+    panoramic.create(document.getElementById('View'));
+    return panoramic.unsubscribe;
   }, []);
+
+  useEffect(() => {
+    panoramic.loadImage(pcxUrl);
+  }, [pcxUrl]);
+
   return (
     <>
       <MyHome id="View"></MyHome>
+      <TopUi uploadUrl={setPcxUrl} />
     </>
   );
 };

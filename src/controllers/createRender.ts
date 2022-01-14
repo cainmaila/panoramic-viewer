@@ -1,3 +1,4 @@
+//棄用
 // import { fromEvent } from 'rxjs';
 // import {
 //   map,
@@ -89,6 +90,9 @@ export function sceneInit(view: Element | null): SceneInit {
       cameraFovSubscription.unsubscribe();
       addSpritSubscription.unsubscribe();
     },
+    loadImage(_url) {
+      console.log(123, _url);
+    },
   };
 }
 
@@ -97,6 +101,7 @@ interface SceneInit {
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
   unsubscribe: Uload;
+  loadImage: (url: string) => void;
 }
 
 interface Uload {
