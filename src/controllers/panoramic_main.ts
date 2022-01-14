@@ -78,7 +78,8 @@ class Panoramic {
     };
   }
   loadImage(_url: string) {
-    this._sphereMaterial.map = new TextureLoader().load(_url);
+    this._sphereMaterial &&
+      (this._sphereMaterial.map = new TextureLoader().load(_url));
   }
   get scene() {
     return this._scene;
