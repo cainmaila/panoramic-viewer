@@ -17,9 +17,8 @@ class Panoramic {
   private _scene: Scene | undefined;
   private _camera: PerspectiveCamera | undefined;
   private _renderer: WebGLRenderer | undefined;
+  private _sphereMaterial: MeshBasicMaterial | undefined;
   unsubscribe: () => void;
-  // private _sphere: Mesh<SphereGeometry, MeshBasicMaterial> | undefined;
-  private _sphereMaterial: MeshBasicMaterial;
   constructor() {
     this.unsubscribe = () => {};
   }
@@ -45,7 +44,6 @@ class Panoramic {
     const sphereMaterial = new MeshBasicMaterial();
     this._sphereMaterial = sphereMaterial;
     const sphere = new Mesh(sphereGeometry, sphereMaterial);
-    // this._sphere = sphere;
     scene.add(sphere);
     //controls
     const controls = new OrbitControls(camera, renderer.domElement);
