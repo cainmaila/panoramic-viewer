@@ -6,12 +6,19 @@ import {
   MeshBasicMaterial,
   TextureLoader,
   Mesh,
+  Vector3,
+  Raycaster,
+  Vector2,
+  SpriteMaterial,
+  Sprite,
 } from 'three';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
 import { cameraFovController } from './cameraFovController';
 import { addSpriteController } from './addSpriteController';
 import { animationFrames$ } from './observables/animationFramesObservable';
+import AreaMesh from './customize/AreaMesh';
+import { fromEvent, map, pluck, scan, switchMap, take, takeUntil } from 'rxjs';
 
 class Panoramic {
   private _scene: Scene | undefined;
@@ -76,6 +83,82 @@ class Panoramic {
       cameraFovSubscription.unsubscribe();
       addSpritSubscription.unsubscribe();
     };
+    //================================================================
+    interface Pos {
+      x: number;
+      y: number;
+      x1: number;
+      y1: number;
+    }
+    controls.enabled = false;
+    const raycaster = new Raycaster();
+    let _point: Vector3 | null = null;
+    let _plane: AreaMesh | null;
+    const material = new SpriteMaterial({
+      map: new TextureLoader().load('placeholder.png'),
+    });
+    material.sizeAttenuation = false;
+    const pointerdown = fromEvent(window, 'pointerdown')
+      .pipe(
+        switchMap((e) => fromEvent(window, 'pointermove')),
+        map((_e) => {
+          const e = <PointerEvent>_e;
+          return {
+            x: (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
+            y: -(e.clientY / renderer.domElement.clientHeight) * 2 + 1,
+          };
+        }),
+        scan((ob, ob2) => {
+          return {
+            ...ob,
+            x1: ob2.x,
+            y1: ob2.y,
+          };
+        }),
+        takeUntil(fromEvent(window, 'pointerup')),
+      )
+      // .subscribe(console.log);
+      .subscribe({
+        next: (a) => {
+          const pointer = <Pos>a;
+          const p0 = new Vector2(pointer.x, pointer.y);
+          const p1 = new Vector2(pointer.x1, pointer.y);
+          const p2 = new Vector2(pointer.x1, pointer.y1);
+          const p3 = new Vector2(pointer.x, pointer.y1);
+          raycaster.setFromCamera(p0, camera);
+          let intersects = raycaster.intersectObject(sphere);
+          const _arr: Vector3[] = [];
+          if (intersects.length > 0) {
+            _arr.push(intersects[0].point);
+          }
+          raycaster.setFromCamera(p1, camera);
+          intersects = raycaster.intersectObject(sphere);
+          if (intersects.length > 0) {
+            _arr.push(intersects[0].point);
+          }
+          raycaster.setFromCamera(p2, camera);
+          intersects = raycaster.intersectObject(sphere);
+          if (intersects.length > 0) {
+            _arr.push(intersects[0].point);
+          }
+          raycaster.setFromCamera(p3, camera);
+          intersects = raycaster.intersectObject(sphere);
+          if (intersects.length > 0) {
+            _arr.push(intersects[0].point);
+          }
+          if (_plane) {
+            _plane.reDraw(_arr);
+          } else {
+            _plane = new AreaMesh(_arr);
+            scene.add(_plane);
+          }
+        },
+        complete: () => {
+          controls.enabled = true;
+        },
+      });
+
+    // const pointermove = fromEvent(window, 'pointermove');
   }
   loadImage(_url: string) {
     this._sphereMaterial &&
