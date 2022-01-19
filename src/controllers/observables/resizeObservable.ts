@@ -1,6 +1,6 @@
-import { fromEvent  } from 'rxjs';
+import { fromEvent } from 'rxjs';
 /**
  * onResize Observable
- * @returns 
+ * @returns
  */
-export const onResizeObservable = fromEvent(window, 'resize'); 
+export const onResizeObservable = fromEvent(window, 'resize');
