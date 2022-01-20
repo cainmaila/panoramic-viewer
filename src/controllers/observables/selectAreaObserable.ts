@@ -19,4 +19,5 @@ export const selectAreaObserableByRenderer = (renderer: Renderer) =>
       };
     }),
     takeUntil(fromEvent(renderer.domElement, 'pointerup')),
+    takeUntil(fromEvent(window, 'addArea')),
   );
