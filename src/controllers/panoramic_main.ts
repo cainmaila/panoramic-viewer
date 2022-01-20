@@ -110,8 +110,6 @@ class Panoramic {
       map: new TextureLoader().load('placeholder.png'),
     });
     material.sizeAttenuation = false;
-    // const pointerdown = fromEvent(window, 'pointerdown')
-    //  controls.enabled = false;
 
     const pointerdown = fromEvent(window, 'addArea')
       .pipe(
@@ -181,68 +179,6 @@ class Panoramic {
         }),
       )
       .subscribe(() => {});
-    // map((e) => fromEvent(window, 'pointerdown')),
-    // switchAll(),
-    // map((e) => fromEvent(window, 'pointermove')),
-    // switchAll(),
-    // map((_e) => {
-    //   const e = <PointerEvent>_e;
-    //   return {
-    //     x: (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
-    //     y: -(e.clientY / renderer.domElement.clientHeight) * 2 + 1,
-    //   };
-    // }),
-    // scan((ob, ob2) => {
-    //   return {
-    //     ...ob,
-    //     x1: ob2.x,
-    //     y1: ob2.y,
-    //   };
-    // }),
-    // takeUntil(fromEvent(renderer.domElement, 'pointerup')),
-    // );
-    // .subscribe(console.log);
-    // .subscribe({
-    //   next: (a) => {
-    //     const pointer = <Pos>a;
-    //     const p0 = new Vector2(pointer.x, pointer.y);
-    //     const p1 = new Vector2(pointer.x1, pointer.y);
-    //     const p2 = new Vector2(pointer.x1, pointer.y1);
-    //     const p3 = new Vector2(pointer.x, pointer.y1);
-    //     raycaster.setFromCamera(p0, camera);
-    //     let intersects = raycaster.intersectObject(sphere);
-    //     const _arr: Vector3[] = [];
-    //     if (intersects.length > 0) {
-    //       _arr.push(intersects[0].point);
-    //     }
-    //     raycaster.setFromCamera(p1, camera);
-    //     intersects = raycaster.intersectObject(sphere);
-    //     if (intersects.length > 0) {
-    //       _arr.push(intersects[0].point);
-    //     }
-    //     raycaster.setFromCamera(p2, camera);
-    //     intersects = raycaster.intersectObject(sphere);
-    //     if (intersects.length > 0) {
-    //       _arr.push(intersects[0].point);
-    //     }
-    //     raycaster.setFromCamera(p3, camera);
-    //     intersects = raycaster.intersectObject(sphere);
-    //     if (intersects.length > 0) {
-    //       _arr.push(intersects[0].point);
-    //     }
-    //     if (_plane) {
-    //       _plane.reDraw(_arr);
-    //     } else {
-    //       _plane = new AreaMesh(_arr);
-    //       scene.add(_plane);
-    //     }
-    //   },
-    //   complete: () => {
-    //     console.log('xxxx');
-    //     controls.enabled = true;
-    //   },
-    // });
-    // const pointermove = fromEvent(window, 'addArea').subscribe(console.log);
   }
   loadImage(_url: string) {
     this._sphereMaterial &&
