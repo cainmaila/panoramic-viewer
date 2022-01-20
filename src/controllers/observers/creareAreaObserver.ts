@@ -1,8 +1,14 @@
-import { Raycaster, Vector2, Vector3 } from 'three';
+import { Raycaster, Vector3 } from 'three';
 import AreaMesh from '../customize/AreaMesh';
 import { AreaPos } from '../observables/selectAreaObserable';
 
 const raycaster = new Raycaster();
+
+const _raycasterSphereByCamera = (camera, sphere) => (po) => {
+  raycaster.setFromCamera(po, camera);
+  let intersects = raycaster.intersectObject(sphere);
+  return intersects[0]?.point;
+};
 
 export const creareAreaObserver =
   (camera, sphere, scene, controls) => (create$) => {
@@ -10,31 +16,11 @@ export const creareAreaObserver =
     create$.subscribe({
       next: (pointers: AreaPos[]) => {
         controls.enabled = false;
-        const p0 = pointers[0];
-        const p1 = pointers[1];
-        const p2 = pointers[2];
-        const p3 = pointers[3];
-        raycaster.setFromCamera(p0, camera);
-        let intersects = raycaster.intersectObject(sphere);
+        const raycasterSphere = _raycasterSphereByCamera(camera, sphere);
         const _arr: Vector3[] = [];
-        if (intersects.length > 0) {
-          _arr.push(intersects[0].point);
-        }
-        raycaster.setFromCamera(p1, camera);
-        intersects = raycaster.intersectObject(sphere);
-        if (intersects.length > 0) {
-          _arr.push(intersects[0].point);
-        }
-        raycaster.setFromCamera(p2, camera);
-        intersects = raycaster.intersectObject(sphere);
-        if (intersects.length > 0) {
-          _arr.push(intersects[0].point);
-        }
-        raycaster.setFromCamera(p3, camera);
-        intersects = raycaster.intersectObject(sphere);
-        if (intersects.length > 0) {
-          _arr.push(intersects[0].point);
-        }
+        pointers.forEach((pointer) => {
+          _arr.push(raycasterSphere(pointer));
+        });
         if (_plane) {
           _plane.reDraw(_arr);
         } else {
@@ -42,7 +28,7 @@ export const creareAreaObserver =
           scene.add(_plane);
         }
       },
-      complete: () => {
+      complete: (a) => {
         controls.enabled = true;
       },
     });
