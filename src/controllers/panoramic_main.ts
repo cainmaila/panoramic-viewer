@@ -8,9 +8,7 @@ import {
   Mesh,
   Vector3,
   Raycaster,
-  Vector2,
   SpriteMaterial,
-  Sprite,
 } from 'three';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
@@ -18,32 +16,10 @@ import { cameraFovController } from './cameraFovController';
 import { addSpriteController } from './addSpriteController';
 import { animationFrames$ } from './observables/animationFramesObservable';
 import AreaMesh from './customize/AreaMesh';
-import {
-  asyncScheduler,
-  fromEvent,
-  map,
-  mergeAll,
-  observeOn,
-  pluck,
-  repeat,
-  repeatWhen,
-  scan,
-  Scheduler,
-  switchAll,
-  switchMap,
-  switchMapTo,
-  take,
-  takeUntil,
-  tap,
-  timer,
-} from 'rxjs';
+import { fromEvent, map, tap } from 'rxjs';
 
-interface Pos {
-  x: number;
-  y: number;
-  x1: number;
-  y1: number;
-}
+import { selectAreaObserableByRenderer } from './observables/selectAreaObserable';
+import { creareAreaObserver } from './observers/creareAreaObserver';
 
 class Panoramic {
   private _scene: Scene | undefined;
@@ -101,91 +77,18 @@ class Panoramic {
       scene,
       sphere,
     );
+    //add area
+    const addAreaSubscription = fromEvent(window, 'addArea')
+      .pipe(map(() => selectAreaObserableByRenderer(renderer)))
+      .subscribe(creareAreaObserver(camera, sphere, scene, controls));
 
     this.unsubscribe = () => {
       onResizeOb.unsubscribe();
       animationFramesSubscription.unsubscribe();
       cameraFovSubscription.unsubscribe();
       addSpritSubscription.unsubscribe();
+      addAreaSubscription.unsubscribe();
     };
-    //================================================================
-
-    const raycaster = new Raycaster();
-    let _point: Vector3 | null = null;
-    const material = new SpriteMaterial({
-      map: new TextureLoader().load('placeholder.png'),
-    });
-    material.sizeAttenuation = false;
-    let _plane: AreaMesh | null;
-
-    fromEvent(window, 'addArea')
-      .pipe(
-        tap(() => {
-          _plane = null;
-          controls.enabled = false;
-        }),
-        map(() =>
-          fromEvent(window, 'pointerdown').pipe(
-            switchMap(() => fromEvent(window, 'pointermove')),
-            map((_e) => {
-              const e = <PointerEvent>_e;
-              return {
-                x: (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
-                y: -(e.clientY / renderer.domElement.clientHeight) * 2 + 1,
-              };
-            }),
-            scan((ob, ob2) => {
-              return {
-                ...ob,
-                x1: ob2.x,
-                y1: ob2.y,
-              };
-            }),
-            takeUntil(fromEvent(renderer.domElement, 'pointerup')),
-          ),
-        ),
-      )
-      .subscribe((create$) => {
-        create$.subscribe({
-          next: (a) => {
-            const pointer = <Pos>a;
-            const p0 = new Vector2(pointer.x, pointer.y);
-            const p1 = new Vector2(pointer.x1, pointer.y);
-            const p2 = new Vector2(pointer.x1, pointer.y1);
-            const p3 = new Vector2(pointer.x, pointer.y1);
-            raycaster.setFromCamera(p0, camera);
-            let intersects = raycaster.intersectObject(sphere);
-            const _arr: Vector3[] = [];
-            if (intersects.length > 0) {
-              _arr.push(intersects[0].point);
-            }
-            raycaster.setFromCamera(p1, camera);
-            intersects = raycaster.intersectObject(sphere);
-            if (intersects.length > 0) {
-              _arr.push(intersects[0].point);
-            }
-            raycaster.setFromCamera(p2, camera);
-            intersects = raycaster.intersectObject(sphere);
-            if (intersects.length > 0) {
-              _arr.push(intersects[0].point);
-            }
-            raycaster.setFromCamera(p3, camera);
-            intersects = raycaster.intersectObject(sphere);
-            if (intersects.length > 0) {
-              _arr.push(intersects[0].point);
-            }
-            if (_plane) {
-              _plane.reDraw(_arr);
-            } else {
-              _plane = new AreaMesh(_arr);
-              scene.add(_plane);
-            }
-          },
-          complete: () => {
-            controls.enabled = true;
-          },
-        });
-      });
   }
   loadImage(_url: string) {
     this._sphereMaterial &&
