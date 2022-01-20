@@ -26,7 +26,7 @@ const Home = () => {
   return (
     <>
       <MyHome id="View"></MyHome>
-      <TopUi uploadUrl={setPcxUrl} />
+      <TopUi uploadUrl={setPcxUrl} addArea={panoramic.addArea} />
     </>
   );
 };

@@ -18,7 +18,26 @@ import { cameraFovController } from './cameraFovController';
 import { addSpriteController } from './addSpriteController';
 import { animationFrames$ } from './observables/animationFramesObservable';
 import AreaMesh from './customize/AreaMesh';
-import { fromEvent, map, pluck, scan, switchMap, take, takeUntil } from 'rxjs';
+import {
+  fromEvent,
+  map,
+  mergeAll,
+  pluck,
+  scan,
+  switchAll,
+  switchMap,
+  switchMapTo,
+  take,
+  takeUntil,
+  tap,
+} from 'rxjs';
+
+interface Pos {
+  x: number;
+  y: number;
+  x1: number;
+  y1: number;
+}
 
 class Panoramic {
   private _scene: Scene | undefined;
@@ -84,13 +103,7 @@ class Panoramic {
       addSpritSubscription.unsubscribe();
     };
     //================================================================
-    interface Pos {
-      x: number;
-      y: number;
-      x1: number;
-      y1: number;
-    }
-    controls.enabled = false;
+
     const raycaster = new Raycaster();
     let _point: Vector3 | null = null;
     let _plane: AreaMesh | null;
@@ -98,9 +111,18 @@ class Panoramic {
       map: new TextureLoader().load('placeholder.png'),
     });
     material.sizeAttenuation = false;
-    const pointerdown = fromEvent(window, 'pointerdown')
+    // const pointerdown = fromEvent(window, 'pointerdown')
+    //  controls.enabled = false;
+
+    const pointerdown = fromEvent(window, 'addArea')
       .pipe(
-        switchMap((e) => fromEvent(window, 'pointermove')),
+        tap(() => {
+          controls.enabled = false;
+        }),
+        map((e) => fromEvent(window, 'pointerdown')),
+        switchAll(),
+        map((e) => fromEvent(window, 'pointermove')),
+        switchAll(),
         map((_e) => {
           const e = <PointerEvent>_e;
           return {
@@ -115,7 +137,7 @@ class Panoramic {
             y1: ob2.y,
           };
         }),
-        takeUntil(fromEvent(window, 'pointerup')),
+        takeUntil(fromEvent(renderer.domElement, 'pointerup')),
       )
       // .subscribe(console.log);
       .subscribe({
@@ -154,15 +176,18 @@ class Panoramic {
           }
         },
         complete: () => {
+          console.log('xxxx');
           controls.enabled = true;
         },
       });
-
-    // const pointermove = fromEvent(window, 'pointermove');
+    // const pointermove = fromEvent(window, 'addArea').subscribe(console.log);
   }
   loadImage(_url: string) {
     this._sphereMaterial &&
       (this._sphereMaterial.map = new TextureLoader().load(_url));
+  }
+  addArea() {
+    window.dispatchEvent(new Event('addArea'));
   }
   get scene() {
     return this._scene;
