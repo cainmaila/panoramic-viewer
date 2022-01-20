@@ -6,17 +6,13 @@ import {
   MeshBasicMaterial,
   TextureLoader,
   Mesh,
-  Vector3,
-  Raycaster,
-  SpriteMaterial,
 } from 'three';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
 import { cameraFovController } from './cameraFovController';
 import { addSpriteController } from './addSpriteController';
 import { animationFrames$ } from './observables/animationFramesObservable';
-import AreaMesh from './customize/AreaMesh';
-import { fromEvent, map, tap } from 'rxjs';
+import { fromEvent, map } from 'rxjs';
 
 import { selectAreaObserableByRenderer } from './observables/selectAreaObserable';
 import { creareAreaObserver } from './observers/creareAreaObserver';

@@ -1,24 +1,19 @@
 import { Raycaster, Vector2, Vector3 } from 'three';
 import AreaMesh from '../customize/AreaMesh';
+import { AreaPos } from '../observables/selectAreaObserable';
 
-interface AreaPos {
-  x: number;
-  y: number;
-  x1: number;
-  y1: number;
-}
 const raycaster = new Raycaster();
+
 export const creareAreaObserver =
   (camera, sphere, scene, controls) => (create$) => {
     let _plane: AreaMesh | null;
     create$.subscribe({
-      next: (a) => {
+      next: (pointers: AreaPos[]) => {
         controls.enabled = false;
-        const pointer = <AreaPos>a;
-        const p0 = new Vector2(pointer.x, pointer.y);
-        const p1 = new Vector2(pointer.x1, pointer.y);
-        const p2 = new Vector2(pointer.x1, pointer.y1);
-        const p3 = new Vector2(pointer.x, pointer.y1);
+        const p0 = pointers[0];
+        const p1 = pointers[1];
+        const p2 = pointers[2];
+        const p3 = pointers[3];
         raycaster.setFromCamera(p0, camera);
         let intersects = raycaster.intersectObject(sphere);
         const _arr: Vector3[] = [];
