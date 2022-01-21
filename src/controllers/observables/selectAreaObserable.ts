@@ -1,15 +1,10 @@
 import { fromEvent, map, scan, switchMap, takeUntil } from 'rxjs';
 import { Renderer, Vector2 } from 'three';
-
-interface Po {
-  x: number;
-  y: number;
-}
 export interface AreaPos {
   x: number;
   y: number;
-  x1: number;
-  y1: number;
+  x1?: number;
+  y1?: number;
 }
 
 const mapPointerEventToAreaArr = map((_pointer) => {
@@ -30,16 +25,16 @@ const mapPointerEventToAreaArr = map((_pointer) => {
 export const selectAreaObserableByRenderer = (renderer: Renderer) =>
   fromEvent(window, 'pointerdown').pipe(
     switchMap(() => fromEvent(window, 'pointermove')),
-    map((_e) => {
+    map((_e): AreaPos => {
       const e = <PointerEvent>_e;
       return {
         x: (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
         y: -(e.clientY / renderer.domElement.clientHeight) * 2 + 1,
       };
     }),
-    scan((ob, ob2) => {
+    scan((ob: AreaPos, ob2: AreaPos): AreaPos => {
       return {
-        ...(<Po>ob),
+        ...ob,
         x1: ob2.x,
         y1: ob2.y,
       };

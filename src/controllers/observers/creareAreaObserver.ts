@@ -1,18 +1,27 @@
-import { Raycaster, Vector3 } from 'three';
+import { connectable, ObservableInput, Subject } from 'rxjs';
+import { Camera, Mesh, Raycaster, Scene, Vector3 } from 'three';
 import AreaMesh from '../customize/AreaMesh';
 import { AreaPos } from '../observables/selectAreaObserable';
 
 const raycaster = new Raycaster();
 
-const _raycasterSphereByCamera = (camera, sphere) => (po) => {
-  raycaster.setFromCamera(po, camera);
-  let intersects = raycaster.intersectObject(sphere);
-  return intersects[0]?.point;
-};
+const _raycasterSphereByCamera =
+  (camera: Camera, sphere: Mesh) => (po: AreaPos) => {
+    raycaster.setFromCamera(po, camera);
+    let intersects = raycaster.intersectObject(sphere);
+    return intersects[0]?.point;
+  };
+
+// interface
 
 export const creareAreaObserver =
-  (camera, sphere, scene, controls) => (create$) => {
+  (camera: Camera, sphere: Mesh, scene: Scene, controls: any) =>
+  (create: ObservableInput<AreaPos[]>) => {
     let _plane: AreaMesh | null;
+    const create$ = connectable(create, {
+      connector: () => new Subject(),
+    });
+
     create$.subscribe({
       next: (pointers: AreaPos[]) => {
         controls.enabled = false;
@@ -28,8 +37,10 @@ export const creareAreaObserver =
           scene.add(_plane);
         }
       },
-      complete: (a) => {
+      complete: () => {
         controls.enabled = true;
       },
     });
+
+    create$.connect();
   };
