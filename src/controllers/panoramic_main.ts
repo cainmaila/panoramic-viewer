@@ -7,12 +7,9 @@ import {
   TextureLoader,
   Mesh,
   Group,
-  Raycaster,
-  Object3D,
-  Vector2,
 } from 'three';
 
-import { filter, fromEvent, map, tap } from 'rxjs';
+import { fromEvent, map } from 'rxjs';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
 import { cameraFovController } from './cameraFovController';
