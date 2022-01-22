@@ -1,4 +1,4 @@
-import { Camera, Mesh, Raycaster, Scene, Vector2, Vector3 } from 'three';
+import { Camera, Mesh, Object3D, Raycaster, Vector2, Vector3 } from 'three';
 import AreaMesh from '../customize/AreaMesh';
 
 const raycaster = new Raycaster();
@@ -18,7 +18,8 @@ export interface I_AddAreaMeshMessage {
 }
 
 export const creareAreaObserver =
-  (camera: Camera, sphere: Mesh, scene: Scene, controls: any) => (create$) => {
+  (camera: Camera, sphere: Mesh, container: Object3D, controls: any) =>
+  (create$) => {
     let _plane: AreaMesh | null;
     create$.subscribe({
       next: (pointers: Vector2[]) => {
@@ -32,7 +33,7 @@ export const creareAreaObserver =
           _plane.reDraw(_arr);
         } else {
           _plane = new AreaMesh(_arr);
-          scene.add(_plane);
+          container.add(_plane);
         }
       },
       complete: () => {
