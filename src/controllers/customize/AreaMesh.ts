@@ -1,10 +1,19 @@
-import { BackSide, Mesh, MeshBasicMaterial, Vector3 } from 'three';
+import {
+  BackSide,
+  Mesh,
+  MeshBasicMaterial,
+  TextureLoader,
+  Vector3,
+} from 'three';
 import AreaGeometry from './AreaGeometry';
+const _t = new TextureLoader().load('./cg.png');
 const material = new MeshBasicMaterial({
   color: 0xffff00,
   side: BackSide,
+  map: _t,
 });
-material.wireframe = true;
+// material.polygonOffset = true;
+// material.wireframe = true;
 
 export default class extends Mesh {
   constructor(_points: Vector3[], name?: string | undefined) {
