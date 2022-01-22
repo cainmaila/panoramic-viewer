@@ -7,6 +7,8 @@ import {
   TextureLoader,
   Mesh,
 } from 'three';
+
+import { fromEvent, map } from 'rxjs';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
 import { cameraFovController } from './cameraFovController';
@@ -16,7 +18,6 @@ import {
   saveMeshSubscription,
   loadMeshSubscription,
 } from './meshDateSubscription';
-import { fromEvent, map } from 'rxjs';
 
 import { selectAreaObserableByRenderer } from './observables/selectAreaObserable';
 import { creareAreaObserver } from './observers/creareAreaObserver';
