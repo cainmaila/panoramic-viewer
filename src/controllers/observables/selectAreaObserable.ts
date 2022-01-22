@@ -1,14 +1,8 @@
-import { fromEvent, map, scan, switchMap, takeUntil } from 'rxjs';
+import { map } from 'rxjs';
 import { Renderer, Vector2 } from 'three';
-export interface AreaPos {
-  x: number;
-  y: number;
-  x1?: number;
-  y1?: number;
-}
+import { pointerSelect$, I_Select } from './pointerSelectObservable';
 
-const mapPointerEventToAreaArr = map((_pointer) => {
-  const pointer = <AreaPos>_pointer;
+const mapPointerEventToAreaArr = map((pointer: I_Select) => {
   return [
     new Vector2(pointer.x, pointer.y),
     new Vector2(pointer.x1, pointer.y),
@@ -23,23 +17,16 @@ const mapPointerEventToAreaArr = map((_pointer) => {
  * @returns Observable
  */
 export const selectAreaObserableByRenderer = (renderer: Renderer) =>
-  fromEvent(window, 'pointerdown').pipe(
-    switchMap(() => fromEvent(window, 'pointermove')),
-    map((_e): AreaPos => {
-      const e = <PointerEvent>_e;
+  pointerSelect$.pipe(
+    map((_select) => {
+      const _clientWidth = renderer.domElement.clientWidth;
+      const _clientHeight = renderer.domElement.clientHeight;
       return {
-        x: (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
-        y: -(e.clientY / renderer.domElement.clientHeight) * 2 + 1,
-      };
-    }),
-    scan((ob: AreaPos, ob2: AreaPos): AreaPos => {
-      return {
-        ...ob,
-        x1: ob2.x,
-        y1: ob2.y,
+        x: (_select.x / _clientWidth) * 2 - 1,
+        y: -(_select.y / _clientHeight) * 2 + 1,
+        x1: (_select.x1 / _clientWidth) * 2 - 1,
+        y1: -(_select.y1 / _clientHeight) * 2 + 1,
       };
     }),
     mapPointerEventToAreaArr,
-    takeUntil(fromEvent(renderer.domElement, 'pointerup')),
-    takeUntil(fromEvent(window, 'addArea')),
   );
