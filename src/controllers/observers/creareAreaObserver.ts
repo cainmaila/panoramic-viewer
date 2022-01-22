@@ -1,4 +1,4 @@
-import { connectable, ObservableInput, Subject } from 'rxjs';
+import { connectable, last, ObservableInput, Subject } from 'rxjs';
 import { Camera, Mesh, Raycaster, Scene, Vector2, Vector3 } from 'three';
 import AreaMesh from '../customize/AreaMesh';
 
@@ -14,13 +14,8 @@ const _raycasterSphereByCamera =
 // interface
 
 export const creareAreaObserver =
-  (camera: Camera, sphere: Mesh, scene: Scene, controls: any) =>
-  (create: ObservableInput<Vector2[]>) => {
+  (camera: Camera, sphere: Mesh, scene: Scene, controls: any) => (create$) => {
     let _plane: AreaMesh | null;
-    const create$ = connectable(create, {
-      connector: () => new Subject(),
-    });
-
     create$.subscribe({
       next: (pointers: Vector2[]) => {
         controls.enabled = false;
@@ -40,6 +35,4 @@ export const creareAreaObserver =
         controls.enabled = true;
       },
     });
-
-    create$.connect();
   };
