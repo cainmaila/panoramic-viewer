@@ -101,6 +101,10 @@ class Panoramic {
   addArea() {
     window.dispatchEvent(new Event('addArea'));
   }
+  clearStore() {
+    // window.dispatchEvent(new Event('clearStore'));
+    localStorage.clear();
+  }
   get scene() {
     return this._scene;
   }

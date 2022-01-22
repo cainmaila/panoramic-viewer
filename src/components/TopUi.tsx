@@ -11,6 +11,7 @@ const StackNav = styled(Stack)`
 interface TopUiProps {
   uploadUrl: (string) => void;
   addArea: () => void;
+  clearStore: () => void;
 }
 
 const TopUi = (props: TopUiProps) => {
@@ -18,6 +19,7 @@ const TopUi = (props: TopUiProps) => {
     <StackNav direction="row" spacing={2}>
       <UploadButton uploadUrl={props.uploadUrl} />
       <Button onClick={props.addArea}>新增區域</Button>
+      <Button onClick={props.clearStore}>清空緩存</Button>
     </StackNav>
   );
 };
