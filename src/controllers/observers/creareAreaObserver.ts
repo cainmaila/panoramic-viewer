@@ -1,4 +1,3 @@
-import { connectable, last, ObservableInput, Subject } from 'rxjs';
 import { Camera, Mesh, Raycaster, Scene, Vector2, Vector3 } from 'three';
 import AreaMesh from '../customize/AreaMesh';
 
