@@ -6,6 +6,7 @@ import {
   MeshBasicMaterial,
   TextureLoader,
   Mesh,
+  Group,
 } from 'three';
 
 import { fromEvent, map } from 'rxjs';
@@ -27,6 +28,7 @@ class Panoramic {
   private _camera: PerspectiveCamera | undefined;
   private _renderer: WebGLRenderer | undefined;
   private _sphereMaterial: MeshBasicMaterial | undefined;
+  private _meshGroup: Group | undefined;
   unsubscribe: () => void;
   constructor() {
     this.unsubscribe = () => {};
@@ -54,6 +56,9 @@ class Panoramic {
     this._sphereMaterial = sphereMaterial;
     const sphere = new Mesh(sphereGeometry, sphereMaterial);
     scene.add(sphere);
+    //mesh Group
+    this._meshGroup = new Group();
+    scene.add(this._meshGroup);
     //controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 0, 0);
@@ -84,7 +89,7 @@ class Panoramic {
       .subscribe(creareAreaObserver(camera, sphere, scene, controls));
 
     //load mesh
-    loadMeshSubscription(scene);
+    loadMeshSubscription(this._meshGroup);
     //save mesh
     const saveMeshSubscription_ = saveMeshSubscription([]);
 
