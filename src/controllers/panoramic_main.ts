@@ -7,9 +7,12 @@ import {
   TextureLoader,
   Mesh,
   Group,
+  Raycaster,
+  Object3D,
+  Vector2,
 } from 'three';
 
-import { fromEvent, map } from 'rxjs';
+import { filter, fromEvent, map, tap } from 'rxjs';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
 import { cameraFovController } from './cameraFovController';
@@ -22,6 +25,7 @@ import {
 
 import { selectAreaObserableByRenderer } from './observables/selectAreaObserable';
 import { creareAreaObserver } from './observers/creareAreaObserver';
+import AreaMesh from './customize/AreaMesh';
 
 class Panoramic {
   private _scene: Scene | undefined;
@@ -86,7 +90,7 @@ class Panoramic {
     //add area
     const addAreaSubscription = fromEvent(window, 'addArea')
       .pipe(map(() => selectAreaObserableByRenderer(renderer)))
-      .subscribe(creareAreaObserver(camera, sphere, scene, controls));
+      .subscribe(creareAreaObserver(camera, sphere, this._meshGroup, controls));
 
     //load mesh
     loadMeshSubscription(this._meshGroup);
@@ -101,6 +105,31 @@ class Panoramic {
       addAreaSubscription.unsubscribe();
       saveMeshSubscription_.unsubscribe(); //save mesh
     };
+
+    //================================================================================================
+    const raycaster = new Raycaster();
+    fromEvent(window, 'pointerup')
+      .pipe(
+        map((_e) => {
+          const e = <PointerEvent>_e;
+          return new Vector2(
+            (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
+            -(e.clientY / renderer.domElement.clientHeight) * 2 + 1,
+          );
+        }),
+        map((_po) => {
+          raycaster.setFromCamera(_po, camera);
+          if (this._meshGroup) {
+            let intersects = raycaster.intersectObject(this._meshGroup);
+            return <AreaMesh>intersects[0]?.object;
+          }
+          return null;
+        }),
+        filter((_mesh) => !!_mesh),
+      )
+      .subscribe((_mesh) => {
+        alert('點選: ' + _mesh?.name);
+      });
   }
   loadImage(_url: string) {
     this._sphereMaterial &&
