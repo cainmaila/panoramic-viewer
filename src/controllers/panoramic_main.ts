@@ -22,6 +22,7 @@ import {
   saveMeshSubscription,
   loadMeshSubscription,
 } from './meshDateSubscription';
+import { clickMeshSubscription } from './clickMeshSubscription';
 
 import { selectAreaObserableByRenderer } from './observables/selectAreaObserable';
 import { creareAreaObserver } from './observers/creareAreaObserver';
@@ -96,6 +97,8 @@ class Panoramic {
     loadMeshSubscription(this._meshGroup);
     //save mesh
     const saveMeshSubscription_ = saveMeshSubscription([]);
+    //click mesh
+    const clickMesh$ = clickMeshSubscription(renderer, camera, this._meshGroup);
 
     this.unsubscribe = () => {
       onResizeOb.unsubscribe();
@@ -103,33 +106,9 @@ class Panoramic {
       cameraFovSubscription.unsubscribe();
       addSpritSubscription.unsubscribe();
       addAreaSubscription.unsubscribe();
-      saveMeshSubscription_.unsubscribe(); //save mesh
+      saveMeshSubscription_.unsubscribe();
+      clickMesh$.unsubscribe();
     };
-
-    //================================================================================================
-    const raycaster = new Raycaster();
-    fromEvent(window, 'pointerup')
-      .pipe(
-        map((_e) => {
-          const e = <PointerEvent>_e;
-          return new Vector2(
-            (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
-            -(e.clientY / renderer.domElement.clientHeight) * 2 + 1,
-          );
-        }),
-        map((_po) => {
-          raycaster.setFromCamera(_po, camera);
-          if (this._meshGroup) {
-            let intersects = raycaster.intersectObject(this._meshGroup);
-            return <AreaMesh>intersects[0]?.object;
-          }
-          return null;
-        }),
-        filter((_mesh) => !!_mesh),
-      )
-      .subscribe((_mesh) => {
-        alert('點選: ' + _mesh?.name);
-      });
   }
   loadImage(_url: string) {
     this._sphereMaterial &&
