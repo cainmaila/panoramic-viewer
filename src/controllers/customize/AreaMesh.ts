@@ -9,7 +9,7 @@ material.wireframe = true;
 export default class extends Mesh {
   constructor(_points: Vector3[], name?: string | undefined) {
     super(new AreaGeometry(_points), material);
-    this.name = name ? this.name : this.uuid;
+    this.name = name || this.uuid;
   }
   reDraw(_points: Vector3[]) {
     this.geometry = new AreaGeometry(_points);
