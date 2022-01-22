@@ -13,6 +13,11 @@ const _raycasterSphereByCamera =
 
 // interface
 
+export interface I_AddAreaMeshMessage {
+  points: Vector3[];
+  name: string;
+}
+
 export const creareAreaObserver =
   (camera: Camera, sphere: Mesh, scene: Scene, controls: any) => (create$) => {
     let _plane: AreaMesh | null;
@@ -33,6 +38,13 @@ export const creareAreaObserver =
       },
       complete: () => {
         controls.enabled = true;
+        if (_plane) {
+          const detail = <I_AddAreaMeshMessage>{
+            points: _plane?.points,
+            name: _plane.name,
+          };
+          window.dispatchEvent(new CustomEvent('addAreaComplete', { detail }));
+        }
       },
     });
   };

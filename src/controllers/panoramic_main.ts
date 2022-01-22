@@ -12,10 +12,15 @@ import { rendererResize } from './renderResizeController';
 import { cameraFovController } from './cameraFovController';
 import { addSpriteController } from './addSpriteController';
 import { animationFrames$ } from './observables/animationFramesObservable';
-import { fromEvent, map } from 'rxjs';
+import { saveMeshSubscription } from './saveMeshSubscription';
+import { fromEvent, map, Observable, scan } from 'rxjs';
 
 import { selectAreaObserableByRenderer } from './observables/selectAreaObserable';
-import { creareAreaObserver } from './observers/creareAreaObserver';
+import {
+  creareAreaObserver,
+  I_AddAreaMeshMessage,
+} from './observers/creareAreaObserver';
+import AreaMesh from './customize/AreaMesh';
 
 class Panoramic {
   private _scene: Scene | undefined;
@@ -78,12 +83,31 @@ class Panoramic {
       .pipe(map(() => selectAreaObserableByRenderer(renderer)))
       .subscribe(creareAreaObserver(camera, sphere, scene, controls));
 
+    //save mesh
+    const saveMeshSubscription_ = saveMeshSubscription([]);
+    //============================================================================
+    new Observable((subscriber) => {
+      const _meshJson: string | null = localStorage.getItem('mesh');
+      if (_meshJson) {
+        subscriber.next(JSON.parse(_meshJson));
+      } else {
+        subscriber.next([]);
+      }
+      subscriber.complete();
+    }).subscribe((data) => {
+      const _arr = <I_AddAreaMeshMessage[]>data;
+      _arr.forEach((_meta) => {
+        scene.add(new AreaMesh(_meta.points, _meta.name));
+      });
+    });
+
     this.unsubscribe = () => {
       onResizeOb.unsubscribe();
       animationFramesSubscription.unsubscribe();
       cameraFovSubscription.unsubscribe();
       addSpritSubscription.unsubscribe();
       addAreaSubscription.unsubscribe();
+      saveMeshSubscription_.unsubscribe(); //save mesh
     };
   }
   loadImage(_url: string) {
