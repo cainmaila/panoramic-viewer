@@ -12,11 +12,13 @@ import { rendererResize } from './renderResizeController';
 import { cameraFovController } from './cameraFovController';
 import { addSpriteController } from './addSpriteController';
 import { animationFrames$ } from './observables/animationFramesObservable';
-import { saveMeshSubscription } from './saveMeshSubscription';
+import {
+  saveMeshSubscription,
+  loadMeshSubscription,
+} from './meshDateSubscription';
 import { fromEvent, map } from 'rxjs';
 
 import { selectAreaObserableByRenderer } from './observables/selectAreaObserable';
-import { loadMeshSubscription } from './loadMeshSubscription';
 import { creareAreaObserver } from './observers/creareAreaObserver';
 
 class Panoramic {
