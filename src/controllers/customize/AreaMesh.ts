@@ -1,8 +1,8 @@
-import { BackSide, Mesh, MeshBasicMaterial, Vector3 } from 'three';
+import { DoubleSide, Mesh, MeshBasicMaterial, Vector3 } from 'three';
 import AreaGeometry from './AreaGeometry';
 const material = new MeshBasicMaterial({
   color: 0xffff00,
-  side: BackSide,
+  side: DoubleSide,
 });
 material.wireframe = true;
 
