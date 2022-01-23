@@ -102,9 +102,10 @@ class Panoramic {
       .subscribe(creareAreaObserver(camera, sphere, this._meshGroup, controls));
 
     //load mesh
-    loadMeshSubscription(this._meshGroup);
+    const data = JSON.parse(localStorage.getItem('mesh') || '[]');
+    loadMeshSubscription(this._meshGroup, data);
     //save mesh
-    const saveMeshSubscription_ = saveMeshSubscription([]);
+    const saveMeshSubscription_ = saveMeshSubscription(data);
     //click mesh
     const clickMesh$ = clickMeshSubscription(renderer, camera, this._meshGroup);
     //pointerEvent

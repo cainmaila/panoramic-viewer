@@ -3,14 +3,9 @@ import { Object3D } from 'three';
 import AreaMesh from './customize/AreaMesh';
 import { I_AddAreaMeshMessage } from './observers/creareAreaObserver';
 
-export const loadMeshSubscription = (container: Object3D) =>
+export const loadMeshSubscription = (container: Object3D, data) =>
   new Observable((subscriber) => {
-    const _meshJson: string | null = localStorage.getItem('mesh');
-    if (_meshJson) {
-      subscriber.next(JSON.parse(_meshJson));
-    } else {
-      subscriber.next([]);
-    }
+    subscriber.next(data);
     subscriber.complete();
   }).subscribe((data) => {
     const _arr = <I_AddAreaMeshMessage[]>data;
