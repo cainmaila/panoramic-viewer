@@ -28,5 +28,5 @@ export const clickMeshSubscription = (
       filter((_mesh) => !!_mesh),
     )
     .subscribe((_mesh) => {
-      alert('點選: ' + _mesh?.name);
+      console.info('點選:', _mesh?.name);
     });
