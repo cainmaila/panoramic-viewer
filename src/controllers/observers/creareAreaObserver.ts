@@ -1,4 +1,15 @@
-import { Camera, Mesh, Object3D, Raycaster, Vector2, Vector3 } from 'three';
+import {
+  Camera,
+  DoubleSide,
+  Mesh,
+  MeshBasicMaterial,
+  Object3D,
+  PlaneGeometry,
+  Raycaster,
+  TextureLoader,
+  Vector2,
+  Vector3,
+} from 'three';
 import AreaMesh from '../customize/AreaMesh';
 
 const raycaster = new Raycaster();
@@ -44,6 +55,27 @@ export const creareAreaObserver =
             name: _plane.name,
           };
           window.dispatchEvent(new CustomEvent('addAreaComplete', { detail }));
+
+          _plane.visible = false;
+          console.log(_plane);
+          const _p1 = _plane?.points[0].multiplyScalar(0.9);
+          const _p2 = _plane?.points[1].multiplyScalar(0.9);
+          const _p3 = _plane?.points[2].multiplyScalar(0.9);
+          const _p4 = _plane?.points[3].multiplyScalar(0.9);
+          const _w = _p1.distanceTo(_p2);
+          const _h = _p1.distanceTo(_p4);
+          const geometry = new PlaneGeometry(_w, _h);
+          const _pm = _p3.sub(_p1).multiplyScalar(0.5);
+          const _pm2 = _p1.add(_pm);
+          const material = new MeshBasicMaterial({
+            color: 0xffff00,
+            side: DoubleSide,
+            map: new TextureLoader().load('./cg.png'),
+          });
+          const plane = new Mesh(geometry, material);
+          plane.position.copy(_pm2);
+          plane.lookAt(new Vector3(0, 0, 0));
+          container.add(plane);
         }
       },
     });
