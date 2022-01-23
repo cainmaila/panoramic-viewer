@@ -7,17 +7,17 @@ import {
   TextureLoader,
   Mesh,
   Group,
+  Raycaster,
+  Vector2,
 } from 'three';
 
 import {
-  animationFrameScheduler,
+  distinct,
+  distinctUntilChanged,
+  filter,
   fromEvent,
   map,
-  merge,
-  mergeScan,
-  of,
   scan,
-  subscribeOn,
 } from 'rxjs';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
@@ -32,8 +32,9 @@ import { clickMeshSubscription } from './clickMeshSubscription';
 
 import { selectAreaObserableByRenderer } from './observables/selectAreaObserable';
 import { creareAreaObserver } from './observers/creareAreaObserver';
-import AreaMesh from './customize/AreaMesh';
 import { pointerEventObservable } from './observables/pointerEventObservable';
+import { filterHover } from './operators/pointerFiller';
+import AreaMesh from './customize/AreaMesh';
 
 class Panoramic {
   private _scene: Scene | undefined;
@@ -106,6 +107,44 @@ class Panoramic {
     const saveMeshSubscription_ = saveMeshSubscription([]);
     //click mesh
     const clickMesh$ = clickMeshSubscription(renderer, camera, this._meshGroup);
+    //pointerEvent
+    const raycaster = new Raycaster();
+    const domElement = renderer.domElement;
+    const pointerEventSubscription = pointerEventObservable
+      .pipe(filterHover())
+      .pipe(
+        map((_pointerState) => {
+          return (
+            _pointerState.move ||
+            _pointerState.end ||
+            _pointerState.start || { x: 0, y: 0 }
+          );
+        }),
+        map((_po) => {
+          return new Vector2(
+            (_po.x / domElement.clientWidth) * 2 - 1,
+            -(_po.y / domElement.clientHeight) * 2 + 1,
+          );
+        }),
+        map((_vpo) => {
+          raycaster.setFromCamera(_vpo, camera);
+          if (this._meshGroup) {
+            let intersects = raycaster.intersectObject(this._meshGroup);
+            return <AreaMesh>intersects[0]?.object;
+          }
+          return undefined;
+        }),
+        distinctUntilChanged((a, b) => a === b),
+        scan((a, b) => {
+          if (a) a.hover = false;
+          if (b) b.hover = true;
+          return b;
+        }),
+      )
+      .subscribe((_hover) => {
+        domElement.style.cursor = _hover ? 'pointer' : 'auto';
+      });
+    pointerEventObservable.connect();
 
     this.unsubscribe = () => {
       onResizeOb.unsubscribe();
@@ -115,11 +154,10 @@ class Panoramic {
       addAreaSubscription.unsubscribe();
       saveMeshSubscription_.unsubscribe();
       clickMesh$.unsubscribe();
+      pointerEventSubscription.unsubscribe();
     };
 
     //================================================================
-    pointerEventObservable.subscribe(console.log);
-    pointerEventObservable.connect();
   }
   loadImage(_url: string) {
     this._sphereMaterial &&
