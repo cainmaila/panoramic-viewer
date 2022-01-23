@@ -9,7 +9,16 @@ import {
   Group,
 } from 'three';
 
-import { fromEvent, map } from 'rxjs';
+import {
+  animationFrameScheduler,
+  fromEvent,
+  map,
+  merge,
+  mergeScan,
+  of,
+  scan,
+  subscribeOn,
+} from 'rxjs';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
 import { cameraFovController } from './cameraFovController';
@@ -24,6 +33,7 @@ import { clickMeshSubscription } from './clickMeshSubscription';
 import { selectAreaObserableByRenderer } from './observables/selectAreaObserable';
 import { creareAreaObserver } from './observers/creareAreaObserver';
 import AreaMesh from './customize/AreaMesh';
+import { pointerEventObservable } from './observables/pointerEventObservable';
 
 class Panoramic {
   private _scene: Scene | undefined;
@@ -106,6 +116,9 @@ class Panoramic {
       saveMeshSubscription_.unsubscribe();
       clickMesh$.unsubscribe();
     };
+
+    //================================================================
+    pointerEventObservable.subscribe(console.log);
   }
   loadImage(_url: string) {
     this._sphereMaterial &&
