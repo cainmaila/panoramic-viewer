@@ -1,10 +1,12 @@
 import {
   animationFrameScheduler,
+  connectable,
   fromEvent,
   map,
   merge,
   Observable,
   scan,
+  Subject,
   subscribeOn,
 } from 'rxjs';
 
@@ -27,10 +29,7 @@ const pointerUp$ = fromEvent(window, 'pointerup').pipe(
   map((_po) => <I_PointerState>{ end: _po }),
 );
 
-/**
- * pointer 事件觀察，打出 I_PointerState 規格
- */
-export const pointerEventObservable: Observable<I_PointerState> = merge(
+const pointerEvent$: Observable<I_PointerState> = merge(
   pointerDown$,
   pointerMove$,
   pointerUp$,
@@ -66,6 +65,13 @@ export const pointerEventObservable: Observable<I_PointerState> = merge(
     },
   ),
 );
+
+/**
+ * pointer 事件觀察，打出 I_PointerState 規格
+ */
+export const pointerEventObservable = connectable(pointerEvent$, {
+  connector: () => new Subject(),
+});
 
 interface I_Po {
   x: number;

@@ -119,6 +119,7 @@ class Panoramic {
 
     //================================================================
     pointerEventObservable.subscribe(console.log);
+    pointerEventObservable.connect();
   }
   loadImage(_url: string) {
     this._sphereMaterial &&
