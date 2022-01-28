@@ -53,11 +53,12 @@ const Home = () => {
       />
       <Snackbar
         open={open}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',
         }}
+        onClose={() => setOpen(false)}
       >
         <Alert severity="info" variant="filled" onClose={() => setOpen(false)}>
           {message}
