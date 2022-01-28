@@ -11,14 +11,7 @@ import {
   Vector2,
 } from 'three';
 
-import {
-  distinct,
-  distinctUntilChanged,
-  filter,
-  fromEvent,
-  map,
-  scan,
-} from 'rxjs';
+import { distinctUntilChanged, fromEvent, map, scan } from 'rxjs';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
 import { cameraFovController } from './cameraFovController';
@@ -35,6 +28,7 @@ import { creareAreaObserver } from './observers/creareAreaObserver';
 import { pointerEventObservable } from './observables/pointerEventObservable';
 import { filterHover } from './operators/pointerFiller';
 import AreaMesh from './customize/AreaMesh';
+import { pointRaycaster, pointToV3 } from './utils/pointTools';
 
 class Panoramic {
   private _scene: Scene | undefined;
@@ -121,22 +115,12 @@ class Panoramic {
             _pointerState.start || { x: 0, y: 0 }
           );
         }),
-        map((_po) => {
-          return new Vector2(
-            (_po.x / domElement.clientWidth) * 2 - 1,
-            -(_po.y / domElement.clientHeight) * 2 + 1,
-          );
-        }),
-        map((_vpo) => {
-          raycaster.setFromCamera(_vpo, camera);
-          if (this._meshGroup) {
-            let intersects = raycaster.intersectObject(this._meshGroup);
-            return <AreaMesh>intersects[0]?.object;
-          }
-          return undefined;
-        }),
+        map(pointToV3(domElement)),
+        map(pointRaycaster(camera, this._meshGroup)),
         distinctUntilChanged((a, b) => a === b),
-        scan((a, b) => {
+        scan((_a, _b) => {
+          const a = <AreaMesh>_a;
+          const b = <AreaMesh>_b;
           if (a) a.hover = false;
           if (b) b.hover = true;
           return b;

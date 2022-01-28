@@ -28,5 +28,7 @@ export const clickMeshSubscription = (
       filter((_mesh) => !!_mesh),
     )
     .subscribe((_mesh) => {
-      console.info('點選:', _mesh?.name);
+      window.dispatchEvent(
+        new CustomEvent('mesh-tap', { detail: _mesh?.name }),
+      );
     });

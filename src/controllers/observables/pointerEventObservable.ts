@@ -73,17 +73,6 @@ export const pointerEventObservable = connectable(pointerEvent$, {
   connector: () => new Subject(),
 });
 
-interface I_Po {
-  x: number;
-  y: number;
-}
-export interface I_PointerState {
-  start?: I_Po | null;
-  move?: I_Po | null;
-  end?: I_Po | null;
-  type: number;
-}
-
 function pointerEventToClientPo(e: Event): I_Po {
   const _e = <PointerEvent>e;
   return {
