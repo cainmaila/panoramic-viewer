@@ -20,8 +20,8 @@ const useStyles = makeStyles({
 
 const Home = () => {
   const classes = useStyles();
-  const [panoramic] = useState(new Panoramic());
-  const [pcxUrl, setPcxUrl] = useState('pcx.jpg');
+  const [panoramic] = useState<Panoramic>(new Panoramic());
+  const [pcxUrl, setPcxUrl] = useState<string>('pcx.jpg');
 
   useEffect(() => {
     panoramic.create(document.getElementById('View'));
@@ -35,10 +35,12 @@ const Home = () => {
     panoramic.loadImage(pcxUrl);
   }, [pcxUrl]);
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string | undefined>(undefined);
+  const [key, setKey] = useState<number>(0);
 
   useEffect(() => {
+    setKey(new Date().getTime());
     setOpen(!!message);
   }, [message]);
 
@@ -53,6 +55,7 @@ const Home = () => {
       />
       <Snackbar
         open={open}
+        key={key}
         autoHideDuration={3000}
         anchorOrigin={{
           vertical: 'bottom',
