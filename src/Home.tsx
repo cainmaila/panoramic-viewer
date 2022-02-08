@@ -1,12 +1,6 @@
 import { useEffect, useState } from 'react';
-// import styled from 'styled-components';
 import { Snackbar, Alert, Box } from '@mui/material';
 import { makeStyles } from '@material-ui/styles';
-
-// const MyHome = styled.div`
-//   height: 100%;
-//   overflow: hidden;
-// `;
 import Panoramic from '@/controllers/panoramic_main';
 import TopUi from '@/components/TopUi';
 
