@@ -1,16 +1,8 @@
 import { useEffect, useState } from 'react';
-import {
-  Snackbar,
-  Alert,
-  Box,
-  SpeedDial,
-  SpeedDialIcon,
-  SpeedDialAction,
-} from '@mui/material';
-import FireplaceIcon from '@mui/icons-material/Fireplace';
-import AutoDeleteIcon from '@mui/icons-material/AutoDelete';
+import { Snackbar, Alert, Box } from '@mui/material';
 import Panoramic from '@/controllers/panoramic_main';
 import TopUi from '@/components/TopUi';
+import SpeedDialUI from '@/components/SpeedDialUI';
 const Home = () => {
   const [panoramic] = useState<Panoramic>(new Panoramic());
   const [pcxUrl, setPcxUrl] = useState<string>('pcx.jpg');
@@ -48,24 +40,10 @@ const Home = () => {
     <>
       <Box id="View" sx={{ height: '100vh', overflow: 'hidden' }}></Box>
       <TopUi uploadUrl={setPcxUrl} />
-      <SpeedDial
-        ariaLabel="SpeedDial basic example"
-        sx={{ position: 'absolute', bottom: 16, right: 16 }}
-        icon={<SpeedDialIcon />}
-      >
-        <SpeedDialAction
-          key={'AddArea'}
-          icon={<FireplaceIcon />}
-          tooltipTitle={'新增區域'}
-          onClick={panoramic.addArea}
-        />
-        <SpeedDialAction
-          key={'ClearStore'}
-          icon={<AutoDeleteIcon />}
-          tooltipTitle={'清空緩存'}
-          onClick={panoramic.clearStore}
-        />
-      </SpeedDial>
+      <SpeedDialUI
+        addArea={panoramic.addArea}
+        clearStore={panoramic.clearStore}
+      />
       <Snackbar
         open={open}
         key={key}

@@ -9,3 +9,9 @@ declare interface I_PointerState {
   end?: I_Po | null;
   type: number;
 }
+
+declare interface I_Panoramic_Handle {
+  loadImage?: (string) => void;
+  addArea?: () => void;
+  clearStore?: () => void;
+}
