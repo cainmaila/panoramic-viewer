@@ -1,18 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Snackbar, Alert, Box } from '@mui/material';
-import { makeStyles } from '@material-ui/styles';
 import Panoramic from '@/controllers/panoramic_main';
 import TopUi from '@/components/TopUi';
-
-const useStyles = makeStyles({
-  root: {
-    height: '100%',
-    overflow: 'hidden',
-  },
-});
-
 const Home = () => {
-  const classes = useStyles();
   const [panoramic] = useState<Panoramic>(new Panoramic());
   const [pcxUrl, setPcxUrl] = useState<string>('pcx.jpg');
 
@@ -39,8 +29,7 @@ const Home = () => {
 
   return (
     <>
-      {/* <MyHome id="View"></MyHome> */}
-      <Box id="View" className={classes.root}></Box>
+      <Box id="View" sx={{ height: '100vh', overflow: 'hidden' }}></Box>
       <TopUi
         uploadUrl={setPcxUrl}
         addArea={panoramic.addArea}
