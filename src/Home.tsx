@@ -1,5 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Snackbar, Alert, Box } from '@mui/material';
+import {
+  Snackbar,
+  Alert,
+  Box,
+  SpeedDial,
+  SpeedDialIcon,
+  SpeedDialAction,
+} from '@mui/material';
+import FireplaceIcon from '@mui/icons-material/Fireplace';
+import AutoDeleteIcon from '@mui/icons-material/AutoDelete';
 import Panoramic from '@/controllers/panoramic_main';
 import TopUi from '@/components/TopUi';
 const Home = () => {
@@ -27,14 +36,36 @@ const Home = () => {
     setOpen(!!message);
   }, [message]);
 
+  useEffect(() => {
+    open || setMessage(undefined);
+  }, [open]);
+
+  const log = () => {
+    console.log('log...');
+  };
+
   return (
     <>
       <Box id="View" sx={{ height: '100vh', overflow: 'hidden' }}></Box>
-      <TopUi
-        uploadUrl={setPcxUrl}
-        addArea={panoramic.addArea}
-        clearStore={panoramic.clearStore}
-      />
+      <TopUi uploadUrl={setPcxUrl} />
+      <SpeedDial
+        ariaLabel="SpeedDial basic example"
+        sx={{ position: 'absolute', bottom: 16, right: 16 }}
+        icon={<SpeedDialIcon />}
+      >
+        <SpeedDialAction
+          key={'AddArea'}
+          icon={<FireplaceIcon />}
+          tooltipTitle={'新增區域'}
+          onClick={panoramic.addArea}
+        />
+        <SpeedDialAction
+          key={'ClearStore'}
+          icon={<AutoDeleteIcon />}
+          tooltipTitle={'清空緩存'}
+          onClick={panoramic.clearStore}
+        />
+      </SpeedDial>
       <Snackbar
         open={open}
         key={key}
