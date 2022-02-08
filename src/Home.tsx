@@ -7,9 +7,8 @@ import { makeStyles } from '@material-ui/styles';
 //   height: 100%;
 //   overflow: hidden;
 // `;
-import Panoramic from './controllers/panoramic_main';
-
-import TopUi from './components/TopUi';
+import Panoramic from '@/controllers/panoramic_main';
+import TopUi from '@/components/TopUi';
 
 const useStyles = makeStyles({
   root: {
