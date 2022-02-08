@@ -63,6 +63,7 @@ class Panoramic {
     this._sphereMaterial = sphereMaterial;
     const sphere = new Mesh(sphereGeometry, sphereMaterial);
     scene.add(sphere);
+    // sphere.visible = false;
     //mesh Group
     this._meshGroup = new Group();
     scene.add(this._meshGroup);

@@ -1,4 +1,4 @@
-import { DoubleSide, Material, Mesh, MeshBasicMaterial, Vector3 } from 'three';
+import { DoubleSide, Mesh, MeshBasicMaterial, Vector3 } from 'three';
 import AreaGeometry from './AreaGeometry';
 
 export default class extends Mesh {
