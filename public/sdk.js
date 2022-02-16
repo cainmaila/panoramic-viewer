@@ -1,18 +1,24 @@
 window.SDK = {
   setup: function (setting) {
     var container = setting.container;
-    var viewerPath = setting.viewer;
-    // var imageName = setting.imageName;
+    var emit = emitContainer(container);
+    var _iframe = this._createIframe(setting.viewer, function () {
+      emit('viewer-ready');
+      _iframe.contentWindow.postMessage(
+        { target: 'Viewer', command: 'loadImage', val: setting.imagePath },
+        '*',
+      );
+    });
+    container.appendChild(_iframe);
+  },
+  _createIframe(viewerPath, onready) {
     var _iframe = document.createElement('iframe');
     _iframe.style.width = '100%';
     _iframe.style.height = '100%';
     _iframe.style.border = 'none';
-    container.appendChild(_iframe);
-    var emit = emitContainer(container);
-    _iframe.onload = function () {
-      emit('viewer-ready');
-    };
+    _iframe.onload = onready;
     _iframe.src = viewerPath;
+    return _iframe;
   },
 };
 
