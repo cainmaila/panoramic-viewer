@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
+import { ajax } from 'rxjs/ajax';
+import { map } from 'rxjs';
 import Panoramic from '@/controllers/panoramic_main';
 const Home = () => {
+  const [config, setConfig] = useState<any>(null);
   const [panoramic] = useState<Panoramic>(new Panoramic());
   const [pcxUrl, setPcxUrl] = useState<string>('./null.jpg');
 
@@ -16,11 +19,29 @@ const Home = () => {
     }
   };
 
+  const sdkResultCall = (val: any) => {
+    window.postMessage(
+      {
+        app: 'Viewer',
+        val,
+      },
+      '*',
+    );
+  };
+
   useEffect(() => {
     window.addEventListener('message', (e) => {
       sdkCommand(e.data);
     });
+
+    ajax('./config.json')
+      .pipe(map(({ response }) => response))
+      .subscribe(setConfig);
   }, []);
+
+  useEffect(() => {
+    config && sdkResultCall('viewer-ready');
+  }, [config]);
 
   useEffect(() => {
     panoramic.create(document.getElementById('View'));

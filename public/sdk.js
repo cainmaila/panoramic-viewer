@@ -10,6 +10,9 @@ window.SDK = {
       );
     });
     container.appendChild(_iframe);
+    _iframe.contentWindow.addEventListener('message', function (e) {
+      console.log('xxxxx', e.data);
+    });
   },
   _createIframe(viewerPath, onready) {
     var _iframe = document.createElement('iframe');
