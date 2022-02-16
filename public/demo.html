@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Viewer Demo</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #viewer {
+        height: 100vh;
+      }
+    </style>
+    <script src="./sdk.js"></script>
+  </head>
+  <body>
+    <div id="viewer"></div>
+    <script>
+      const _container = document.getElementById('viewer');
+      _container.addEventListener('viewer-ready', function () {
+        console.log('viewer-ready');
+      });
+      window.SDK.setup({
+        container: _container,
+        viewer: './',
+      });
+    </script>
+  </body>
+</html>
