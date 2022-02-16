@@ -1,0 +1,6 @@
+{
+  "iconLib": [
+    { "type": "placeholder", "path": "./img/placeholder.png" },
+    { "type": "userhade", "path": "./img/icon.jpg" }
+  ]
+}
