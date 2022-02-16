@@ -7,28 +7,13 @@ import {
   TextureLoader,
   Mesh,
   Group,
-  Raycaster,
-  Vector2,
 } from 'three';
 
-import { distinctUntilChanged, fromEvent, map, scan } from 'rxjs';
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
 import { cameraFovController } from './cameraFovController';
 import { addSpriteController } from './addSpriteController';
 import { animationFrames$ } from './observables/animationFramesObservable';
-import {
-  saveMeshSubscription,
-  loadMeshSubscription,
-} from './meshDateSubscription';
-import { clickMeshSubscription } from './clickMeshSubscription';
-
-import { selectAreaObserableByRenderer } from './observables/selectAreaObserable';
-import { creareAreaObserver } from './observers/creareAreaObserver';
-import { pointerEventObservable } from './observables/pointerEventObservable';
-import { filterHover } from './operators/pointerFiller';
-import AreaMesh from './customize/AreaMesh';
-import { pointRaycaster, pointToV3 } from './utils/pointTools';
 
 class Panoramic {
   private _scene: Scene | undefined;
@@ -90,56 +75,12 @@ class Panoramic {
       scene,
       sphere,
     );
-    //add area
-    const addAreaSubscription = fromEvent(window, 'addArea')
-      .pipe(map(() => selectAreaObserableByRenderer(renderer)))
-      .subscribe(creareAreaObserver(camera, sphere, this._meshGroup, controls));
-
-    //load mesh
-    const data = JSON.parse(localStorage.getItem('mesh') || '[]');
-    loadMeshSubscription(this._meshGroup, data);
-    //save mesh
-    const saveMeshSubscription_ = saveMeshSubscription(data);
-    //click mesh
-    const clickMesh$ = clickMeshSubscription(renderer, camera, this._meshGroup);
-    //pointerEvent
-    const raycaster = new Raycaster();
-    const domElement = renderer.domElement;
-    const pointerEventSubscription = pointerEventObservable
-      .pipe(filterHover())
-      .pipe(
-        map((_pointerState) => {
-          return (
-            _pointerState.move ||
-            _pointerState.end ||
-            _pointerState.start || { x: 0, y: 0 }
-          );
-        }),
-        map(pointToV3(domElement)),
-        map(pointRaycaster(camera, this._meshGroup)),
-        distinctUntilChanged((a, b) => a === b),
-        scan((_a, _b) => {
-          const a = <AreaMesh>_a;
-          const b = <AreaMesh>_b;
-          if (a) a.hover = false;
-          if (b) b.hover = true;
-          return b;
-        }),
-      )
-      .subscribe((_hover) => {
-        domElement.style.cursor = _hover ? 'pointer' : 'auto';
-      });
-    pointerEventObservable.connect();
 
     this.unsubscribe = () => {
       onResizeOb.unsubscribe();
       animationFramesSubscription.unsubscribe();
       cameraFovSubscription.unsubscribe();
       addSpritSubscription.unsubscribe();
-      addAreaSubscription.unsubscribe();
-      saveMeshSubscription_.unsubscribe();
-      clickMesh$.unsubscribe();
-      pointerEventSubscription.unsubscribe();
     };
 
     //================================================================
