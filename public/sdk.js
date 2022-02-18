@@ -9,9 +9,12 @@ window.SDK = {
     container.appendChild(this._iframe);
     this._iframe.contentWindow.addEventListener('message', function (e) {
       if (e.data?.app === 'Viewer') {
-        switch (e.data?.val) {
+        switch (e.data?.val?.command) {
           case 'viewer-ready':
             emit('viewer-ready');
+            break;
+          case 'addInfoNode':
+            emit('viewer-addInfoNode', e.data.val.params);
             break;
           default:
             console.warn('未定義 Viewer message', e.data);
@@ -44,7 +47,7 @@ function _postToViewer(_iframe, command, val) {
 }
 
 function _emitContainer(container) {
-  return (container.emit = function (event, details) {
-    container.dispatchEvent(new CustomEvent(event, { details }));
+  return (container.emit = function (event, detail) {
+    container.dispatchEvent(new CustomEvent(event, { detail }));
   });
 }

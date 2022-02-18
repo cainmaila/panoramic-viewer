@@ -22,6 +22,14 @@ export function addSpriteController(
         _point.multiplyScalar(0.9);
         const sprite = new InfoNodeSprint(_point, null, iconType, iconSize);
         container.add(sprite);
+        window.dispatchEvent(
+          new CustomEvent<{ id: string; iconType: string; iconSize: number }>(
+            'add-infoNode',
+            {
+              detail: { id: sprite.name, iconType, iconSize },
+            },
+          ),
+        );
       }
     });
 }

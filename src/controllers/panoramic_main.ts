@@ -9,7 +9,7 @@ import {
   Group,
 } from 'three';
 
-import { Subscription } from 'rxjs';
+import { fromEvent, Subscription } from 'rxjs';
 
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';

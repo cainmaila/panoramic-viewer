@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { ajax } from 'rxjs/ajax';
-import { map } from 'rxjs';
+import { fromEvent } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import Panoramic from '@/controllers/panoramic_main';
 const Home = () => {
@@ -26,11 +27,14 @@ const Home = () => {
     }
   };
 
-  const sdkResultCall = (val: any) => {
+  const sdkResultCall = (
+    command: string,
+    params: any | undefined = undefined,
+  ) => {
     window.postMessage(
       {
         app: 'Viewer',
-        val,
+        val: { command, params },
       },
       '*',
     );
@@ -44,6 +48,19 @@ const Home = () => {
     ajax('./config.json')
       .pipe(map(({ response }) => response))
       .subscribe(setConfig);
+
+    //add an InfoNode
+    const addInfoNode$ = fromEvent(window, 'add-infoNode')
+      .pipe(
+        map((e: Event) => {
+          const _e = e as CustomEvent;
+          return _e.detail;
+        }),
+      )
+      .subscribe((infoNode) => {
+        sdkResultCall('addInfoNode', infoNode);
+      });
+    return addInfoNode$.unsubscribe;
   }, []);
 
   useEffect(() => {
