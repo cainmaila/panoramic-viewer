@@ -6,7 +6,6 @@ const raycaster = new Raycaster();
 export function addSpriteController(
   renderer: WebGLRenderer,
   camera: Camera,
-  scene: Scene,
   sphere: Mesh,
   container: Group,
   iconType: string,

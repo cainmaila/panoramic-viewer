@@ -9,12 +9,13 @@ import {
   Group,
 } from 'three';
 
-import { fromEvent, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
 import { cameraFovController } from './cameraFovController';
 import { addSpriteController } from './addSpriteController';
+import { clickSpriteController } from './clickSpriteController';
 import { animationFrames$ } from './observables/animationFramesObservable';
 
 class Panoramic {
@@ -43,7 +44,6 @@ class Panoramic {
         this._mainSubscription = addSpriteController(
           this._renderer,
           this._camera,
-          this._scene,
           this._sphere,
           this._infoNodeContainer,
           this._mode.params.iconType,
@@ -82,6 +82,7 @@ class Panoramic {
     this._sphere = sphere;
     //addInfoNode Container
     scene.add(this._infoNodeContainer);
+    clickSpriteController(renderer, camera, this._infoNodeContainer);
     //controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 0, 0);
