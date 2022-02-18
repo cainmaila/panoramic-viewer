@@ -3,7 +3,6 @@ window.SDK = {
     var container = setting.container;
     var emit = emitContainer(container);
     var _iframe = this._createIframe(setting.viewer, function () {
-      emit('viewer-ready');
       _iframe.contentWindow.postMessage(
         { target: 'Viewer', command: 'loadImage', val: setting.imagePath },
         '*',
@@ -11,7 +10,15 @@ window.SDK = {
     });
     container.appendChild(_iframe);
     _iframe.contentWindow.addEventListener('message', function (e) {
-      console.log('xxxxx', e.data);
+      if (e.data?.app === 'Viewer') {
+        switch (e.data?.val) {
+          case 'viewer-ready':
+            emit('viewer-ready');
+            break;
+          default:
+            console.warn('未定義 Viewer message', e.data);
+        }
+      }
     });
   },
   _createIframe(viewerPath, onready) {

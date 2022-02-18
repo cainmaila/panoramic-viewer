@@ -15,3 +15,8 @@ declare interface I_Panoramic_Handle {
   addArea?: () => void;
   clearStore?: () => void;
 }
+
+declare interface I_IconTexture {
+  type: string;
+  path: string;
+}

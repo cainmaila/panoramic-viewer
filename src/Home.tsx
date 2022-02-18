@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { ajax } from 'rxjs/ajax';
 import { map } from 'rxjs';
+
 import Panoramic from '@/controllers/panoramic_main';
 const Home = () => {
   const [config, setConfig] = useState<any>(null);
@@ -40,7 +41,10 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    config && sdkResultCall('viewer-ready');
+    if (config) {
+      _settingIconTexture(config?.iconLib || []);
+      sdkResultCall('viewer-ready');
+    }
   }, [config]);
 
   useEffect(() => {
@@ -59,3 +63,11 @@ const Home = () => {
 };
 
 export default Home;
+
+//設定icon類型與材質
+import TextureLib from '@/controllers/customize/TextureLib';
+function _settingIconTexture(icons: [I_IconTexture]) {
+  icons.forEach((icon: I_IconTexture) => {
+    TextureLib.createTexture(icon.type, icon.path);
+  });
+}

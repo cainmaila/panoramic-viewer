@@ -1,4 +1,4 @@
-import { Raycaster, SpriteMaterial, TextureLoader, Sprite } from 'three';
+import { Raycaster } from 'three';
 import { pointerupObservable } from './observables/pointerupObservable';
 import InfoNodeSprint from './customize/InfoNodeSprint';
 const raycaster = new Raycaster();
@@ -14,7 +14,7 @@ export function addSpriteController(
     if (intersects.length > 0) {
       const _point = intersects[0].point;
       _point.multiplyScalar(0.9);
-      const sprite = new InfoNodeSprint(_point);
+      const sprite = new InfoNodeSprint(_point, 'p1', 0.7);
       scene.add(sprite);
     }
   });

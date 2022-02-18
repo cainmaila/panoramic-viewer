@@ -14,7 +14,5 @@ class TextureLib {
 }
 
 const textureLib = new TextureLib();
-textureLib.createTexture('p1', 'img/placeholder.png');
-textureLib.createTexture('p2', 'img/icon.jpg');
 
 export default textureLib;
