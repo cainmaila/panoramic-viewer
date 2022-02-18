@@ -6,6 +6,7 @@ import {
   MeshBasicMaterial,
   TextureLoader,
   Mesh,
+  Group,
 } from 'three';
 
 import { Subscription } from 'rxjs';
@@ -25,7 +26,9 @@ class Panoramic {
   unsubscribe: () => void;
   private _mode: I_PanoramicMode | undefined | null;
   private _sphere: Mesh<SphereGeometry, MeshBasicMaterial> | undefined;
+  private _infoNodeContainer: Group;
   constructor() {
+    this._infoNodeContainer = new Group();
     this.unsubscribe = () => {};
   }
   set mode(val) {
@@ -42,6 +45,7 @@ class Panoramic {
           this._camera,
           this._scene,
           this._sphere,
+          this._infoNodeContainer,
           this._mode.params.iconType,
           this._mode.params.iconSize,
         );
@@ -76,6 +80,8 @@ class Panoramic {
     const sphere = new Mesh(sphereGeometry, sphereMaterial);
     scene.add(sphere);
     this._sphere = sphere;
+    //addInfoNode Container
+    scene.add(this._infoNodeContainer);
     //controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 0, 0);

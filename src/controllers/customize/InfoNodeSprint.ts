@@ -1,11 +1,12 @@
 import { Sprite, SpriteMaterial, TextureLoader, Vector3 } from 'three';
 import TextureLib from './TextureLib';
 class InfoNodeSprint extends Sprite {
-  constructor(position: Vector3, type: string, size = 1) {
+  constructor(position: Vector3, name: string | null, type: string, size = 1) {
     const _size = size * 0.1;
     const material = new SpriteMaterial({});
     material.sizeAttenuation = false;
     super(material);
+    this.name = name || this.uuid;
     this.scale.set(_size, _size, 1);
     this.center.y = 0;
     this.position.copy(position);
