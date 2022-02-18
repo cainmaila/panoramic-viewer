@@ -37,6 +37,12 @@
       });
       _container.addEventListener('viewer-addInfoNode', function (e) {
         console.log('新增了', e.detail);
+        setTimeout(function () {
+          window.SDK.delInfoNode(e.detail.id);
+        }, 1000);
+      });
+      _container.addEventListener('viewer-delInfoNode', function (e) {
+        console.log('刪除了', e.detail);
       });
 
       window.SDK.setup({

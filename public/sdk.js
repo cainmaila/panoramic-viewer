@@ -16,6 +16,9 @@ window.SDK = {
           case 'addInfoNode':
             emit('viewer-addInfoNode', e.data.val.params);
             break;
+          case 'delInfoNode':
+            emit('viewer-delInfoNode', e.data.val.params);
+            break;
           default:
             console.warn('未定義 Viewer message', e.data);
         }
@@ -24,6 +27,9 @@ window.SDK = {
   },
   addInfoNodeMode(iconType, iconSize) {
     this._postToViewer('addInfoNode', { iconType, iconSize });
+  },
+  delInfoNode(id) {
+    this._postToViewer('delInfoNode', id);
   },
   stopAddInfoNode() {
     this._postToViewer('stopAddInfoNode');

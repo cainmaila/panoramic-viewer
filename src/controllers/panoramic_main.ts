@@ -113,6 +113,17 @@ class Panoramic {
     this._sphereMaterial &&
       (this._sphereMaterial.map = new TextureLoader().load(_url));
   }
+  delInfoNode(id: string) {
+    const _infoNode = this._infoNodeContainer.getObjectByName(id);
+    if (_infoNode) {
+      this._infoNodeContainer.remove(_infoNode);
+      window.dispatchEvent(
+        new CustomEvent<string>('del-infoNode', {
+          detail: id,
+        }),
+      );
+    }
+  }
   addArea() {
     window.dispatchEvent(new Event('addArea'));
   }

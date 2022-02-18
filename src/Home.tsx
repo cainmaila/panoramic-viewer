@@ -19,6 +19,9 @@ const Home = () => {
       case 'addInfoNode':
         panoramic.mode = { state: 'addInfoNode', params: val };
         break;
+      case 'delInfoNode':
+        panoramic.delInfoNode(val);
+        break;
       case 'stopAddInfoNode':
         panoramic.mode = null;
         break;
@@ -60,7 +63,22 @@ const Home = () => {
       .subscribe((infoNode) => {
         sdkResultCall('addInfoNode', infoNode);
       });
-    return addInfoNode$.unsubscribe;
+
+    //del an InfoNode
+    const delInfoNode$ = fromEvent(window, 'del-infoNode')
+      .pipe(
+        map((e: Event) => {
+          const _e = e as CustomEvent;
+          return _e.detail;
+        }),
+      )
+      .subscribe((infoNodeId) => {
+        sdkResultCall('delInfoNode', infoNodeId);
+      });
+    return () => {
+      addInfoNode$.unsubscribe();
+      delInfoNode$.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
