@@ -20,3 +20,8 @@ declare interface I_IconTexture {
   type: string;
   path: string;
 }
+
+declare interface I_PanoramicMode {
+  state: string | undefined;
+  params: any | undefined;
+}

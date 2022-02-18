@@ -14,11 +14,22 @@
       #viewer {
         height: 100vh;
       }
+      #ui {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+      }
     </style>
     <script src="./sdk.js"></script>
   </head>
   <body>
     <div id="viewer"></div>
+    <div id="ui">
+      <button onclick="addInfoNode('p1',0.7)">新增一個p1</button>
+      <button onclick="addInfoNode('p2')">新增一個p2</button>
+      <button onclick="stopAddInfoNode()">取消新增</button>
+    </div>
     <script>
       const _container = document.getElementById('viewer');
       _container.addEventListener('viewer-ready', function () {
@@ -29,6 +40,14 @@
         viewer: './',
         imagePath: 'pcx.jpg',
       });
+
+      function addInfoNode(type, size) {
+        window.SDK.addInfoNodeMode(type, size);
+      }
+
+      function stopAddInfoNode(type, size) {
+        window.SDK.stopAddInfoNode();
+      }
     </script>
   </body>
 </html>

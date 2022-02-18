@@ -6,11 +6,14 @@ import { map, filter } from 'rxjs/operators';
  * @param {THREE.WebGLRenderer} renderer
  * @return {*}
  */
-export function pointerupObservable(renderer: THREE.WebGLRenderer) {
+export function pointerupObservable(
+  renderer: THREE.WebGLRenderer,
+  buttonType: number = 0,
+) {
   return fromEvent(window, 'pointerup').pipe(
     filter((_e) => {
       const e = <PointerEvent>_e;
-      return e.button === 2;
+      return e.button === buttonType;
     }),
     map((_e) => {
       const e = <PointerEvent>_e;

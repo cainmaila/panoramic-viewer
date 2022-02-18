@@ -6,8 +6,9 @@ import {
   MeshBasicMaterial,
   TextureLoader,
   Mesh,
-  Group,
 } from 'three';
+
+import { Subscription } from 'rxjs';
 
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
@@ -20,10 +21,36 @@ class Panoramic {
   private _camera: PerspectiveCamera | undefined;
   private _renderer: WebGLRenderer | undefined;
   private _sphereMaterial: MeshBasicMaterial | undefined;
-  private _meshGroup: Group | undefined;
+  private _mainSubscription: Subscription | undefined | null;
   unsubscribe: () => void;
+  private _mode: I_PanoramicMode | undefined | null;
+  private _sphere: Mesh<SphereGeometry, MeshBasicMaterial> | undefined;
   constructor() {
     this.unsubscribe = () => {};
+  }
+  set mode(val) {
+    this._mainSubscription && this._mainSubscription.unsubscribe();
+    this._mode = val;
+    switch (this._mode?.state) {
+      case 'addInfoNode': //add infoNode
+        if (!this._renderer) throw new Error('no renderer');
+        if (!this._camera) throw new Error('no camera');
+        if (!this._scene) throw new Error('no scene');
+        if (!this._sphere) throw new Error('no sphere');
+        this._mainSubscription = addSpriteController(
+          this._renderer,
+          this._camera,
+          this._scene,
+          this._sphere,
+          this._mode.params.iconType,
+          this._mode.params.iconSize,
+        );
+        break;
+      default:
+    }
+  }
+  get mode() {
+    return this._mode;
   }
   create(view: Element | null) {
     if (!view) throw new Error('view can not null!');
@@ -41,16 +68,14 @@ class Panoramic {
     this._renderer = renderer;
     renderer.setPixelRatio(window.devicePixelRatio);
     view.appendChild(renderer.domElement);
-    //demo
+    //create sphere
     const sphereGeometry = new SphereGeometry(500, 50, 50);
     sphereGeometry.scale(-1, 1, 1);
     const sphereMaterial = new MeshBasicMaterial();
     this._sphereMaterial = sphereMaterial;
     const sphere = new Mesh(sphereGeometry, sphereMaterial);
     scene.add(sphere);
-    //mesh Group
-    this._meshGroup = new Group();
-    scene.add(this._meshGroup);
+    this._sphere = sphere;
     //controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 0, 0);
@@ -68,19 +93,12 @@ class Panoramic {
     animationFrames$.connect();
     //zoom fov
     const cameraFovSubscription = cameraFovController(camera);
-    //cast
-    const addSpritSubscription = addSpriteController(
-      renderer,
-      camera,
-      scene,
-      sphere,
-    );
 
     this.unsubscribe = () => {
       onResizeOb.unsubscribe();
       animationFramesSubscription.unsubscribe();
       cameraFovSubscription.unsubscribe();
-      addSpritSubscription.unsubscribe();
+      this._mainSubscription && this._mainSubscription.unsubscribe();
     };
 
     //================================================================

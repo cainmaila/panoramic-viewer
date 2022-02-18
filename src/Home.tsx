@@ -15,6 +15,12 @@ const Home = () => {
       case 'loadImage':
         setPcxUrl(val);
         break;
+      case 'addInfoNode':
+        panoramic.mode = { state: 'addInfoNode', params: val };
+        break;
+      case 'stopAddInfoNode':
+        panoramic.mode = null;
+        break;
       default:
         console.warn('no command', command);
     }

@@ -1,15 +1,13 @@
 window.SDK = {
   setup: function (setting) {
     var container = setting.container;
-    var emit = emitContainer(container);
+    var emit = _emitContainer(container);
     var _iframe = this._createIframe(setting.viewer, function () {
-      _iframe.contentWindow.postMessage(
-        { target: 'Viewer', command: 'loadImage', val: setting.imagePath },
-        '*',
-      );
+      _postToViewer(_iframe, 'loadImage', setting.imagePath);
     });
-    container.appendChild(_iframe);
-    _iframe.contentWindow.addEventListener('message', function (e) {
+    this._iframe = _iframe;
+    container.appendChild(this._iframe);
+    this._iframe.contentWindow.addEventListener('message', function (e) {
       if (e.data?.app === 'Viewer') {
         switch (e.data?.val) {
           case 'viewer-ready':
@@ -20,6 +18,15 @@ window.SDK = {
         }
       }
     });
+  },
+  addInfoNodeMode(iconType, iconSize) {
+    this._postToViewer('addInfoNode', { iconType, iconSize });
+  },
+  stopAddInfoNode() {
+    this._postToViewer('stopAddInfoNode');
+  },
+  _postToViewer(command, val) {
+    _postToViewer(this._iframe, command, val);
   },
   _createIframe(viewerPath, onready) {
     var _iframe = document.createElement('iframe');
@@ -32,7 +39,11 @@ window.SDK = {
   },
 };
 
-function emitContainer(container) {
+function _postToViewer(_iframe, command, val) {
+  _iframe.contentWindow.postMessage({ target: 'Viewer', command, val }, '*');
+}
+
+function _emitContainer(container) {
   return (container.emit = function (event, details) {
     container.dispatchEvent(new CustomEvent(event, { details }));
   });
