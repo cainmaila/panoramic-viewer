@@ -62,6 +62,7 @@ const Home = () => {
       )
       .subscribe((infoNode) => {
         sdkResultCall('addInfoNode', infoNode);
+        panoramic.mode = null;
       });
 
     //del an InfoNode

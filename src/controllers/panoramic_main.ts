@@ -35,11 +35,10 @@ class Panoramic {
   set mode(val) {
     this._mainSubscription && this._mainSubscription.unsubscribe();
     this._mode = val;
+    if (!this._renderer) throw new Error('no renderer');
+    if (!this._camera) throw new Error('no camera');
     switch (this._mode?.state) {
       case 'addInfoNode': //add infoNode
-        if (!this._renderer) throw new Error('no renderer');
-        if (!this._camera) throw new Error('no camera');
-        if (!this._scene) throw new Error('no scene');
         if (!this._sphere) throw new Error('no sphere');
         this._mainSubscription = addSpriteController(
           this._renderer,
@@ -51,6 +50,11 @@ class Panoramic {
         );
         break;
       default:
+        this._mainSubscription = clickSpriteController(
+          this._renderer,
+          this._camera,
+          this._infoNodeContainer,
+        );
     }
   }
   get mode() {
@@ -82,7 +86,6 @@ class Panoramic {
     this._sphere = sphere;
     //addInfoNode Container
     scene.add(this._infoNodeContainer);
-    clickSpriteController(renderer, camera, this._infoNodeContainer);
     //controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 0, 0);
