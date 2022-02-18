@@ -19,6 +19,9 @@ window.SDK = {
           case 'delInfoNode':
             emit('viewer-delInfoNode', e.data.val.params);
             break;
+          case 'clickInfoNode':
+            emit('viewer-clickInfoNode', e.data.val.params);
+            break;
           default:
             console.warn('未定義 Viewer message', e.data);
         }

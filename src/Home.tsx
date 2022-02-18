@@ -76,9 +76,21 @@ const Home = () => {
       .subscribe((infoNodeId) => {
         sdkResultCall('delInfoNode', infoNodeId);
       });
+    //click infoNode
+    const clickInfoNode$ = fromEvent(window, 'click-infoNode')
+      .pipe(
+        map((e: Event) => {
+          const _e = e as CustomEvent;
+          return _e.detail;
+        }),
+      )
+      .subscribe((infoNodeId) => {
+        sdkResultCall('clickInfoNode', infoNodeId);
+      });
     return () => {
       addInfoNode$.unsubscribe();
       delInfoNode$.unsubscribe();
+      clickInfoNode$.unsubscribe();
     };
   }, []);
 

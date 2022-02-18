@@ -13,7 +13,15 @@ export function clickSpriteController(
       const _infoNode = intersects.filter((res) => {
         return res && res.object;
       })[0];
-      console.log(_infoNode.object.name);
+      const sprite = _infoNode.object;
+      window.dispatchEvent(
+        new CustomEvent<{
+          id: string;
+          position: { x: number; y: number; z: number };
+        }>('click-infoNode', {
+          detail: { id: sprite.name, position: sprite.position },
+        }),
+      );
     }
   });
 }
