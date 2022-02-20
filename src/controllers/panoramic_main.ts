@@ -155,6 +155,23 @@ class Panoramic extends EventEmitter {
     this._camera.position.copy(_v3);
     this._camera.lookAt(new Vector3(0, 0, 0));
   }
+  clearInfoNodes() {
+    this._infoNodeContainer.children.forEach((_obj) => {
+      this._infoNodeContainer.remove(_obj);
+    });
+  }
+  setInfoNodes(_nodeMetas: I_InfoNodeMeta[]) {
+    this.clearInfoNodes();
+    _nodeMetas.forEach((_node) => {
+      const sprite = new InfoNodeSprint(
+        _node.position,
+        _node.id,
+        _node.iconType,
+        _node.iconSize,
+      );
+      this._infoNodeContainer.add(sprite);
+    });
+  }
   addArea() {
     window.dispatchEvent(new Event('addArea'));
   }

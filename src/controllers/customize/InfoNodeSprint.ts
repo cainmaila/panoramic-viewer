@@ -4,7 +4,7 @@ class InfoNodeSprint extends Sprite {
   private _iconType: string;
   private _size: number = 1;
   constructor(
-    position: Vector3,
+    position: { x: number; y: number; z: number },
     name: string | null,
     iconType: string,
     size = 1,
