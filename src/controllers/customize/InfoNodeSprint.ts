@@ -34,6 +34,14 @@ class InfoNodeSprint extends Sprite {
   get size(): number {
     return this._size;
   }
+  get meta(): I_InfoNodeMeta {
+    return {
+      id: this.name,
+      iconType: this.iconType,
+      iconSize: this.size,
+      position: this.position,
+    };
+  }
 }
 
 export default InfoNodeSprint;

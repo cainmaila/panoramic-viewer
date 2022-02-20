@@ -10,6 +10,19 @@ const Home = () => {
   const [panoramic] = useState<Panoramic>(new Panoramic());
   const [pcxUrl, setPcxUrl] = useState<string>('./null.jpg');
 
+  const sdkResultCall = (
+    command: string,
+    params: any | undefined = undefined,
+  ) => {
+    window.postMessage(
+      {
+        app: 'Viewer',
+        val: { command, params },
+      },
+      '*',
+    );
+  };
+
   const sdkCommand = ({ target, command, val }) => {
     if (target !== 'Viewer') return;
     switch (command) {
@@ -28,22 +41,12 @@ const Home = () => {
       case 'changeIconType':
         panoramic.changeIconType(val.id, val.iconType, val.size);
         break;
+      case 'getInfoNodes':
+        sdkResultCall('onGetInfoNodes', panoramic.infoNodes);
+        break;
       default:
         console.warn('no command', command);
     }
-  };
-
-  const sdkResultCall = (
-    command: string,
-    params: any | undefined = undefined,
-  ) => {
-    window.postMessage(
-      {
-        app: 'Viewer',
-        val: { command, params },
-      },
-      '*',
-    );
   };
 
   useEffect(() => {

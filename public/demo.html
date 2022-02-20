@@ -29,6 +29,7 @@
       <button onclick="addInfoNode('p1',0.7)">新增一個p1</button>
       <button onclick="addInfoNode('p2')">新增一個p2</button>
       <button onclick="stopAddInfoNode()">取消新增</button>
+      <button onclick="getInfoNodes()">取回列表</button>
     </div>
     <script>
       const _container = document.getElementById('viewer');
@@ -48,6 +49,9 @@
         console.log('點選', e.detail);
         // window.SDK.changeIconType(e.detail.id, 'p1', 0.7);
       });
+      _container.addEventListener('viewer-getInfoNodes', function (e) {
+        console.log('返回列表', e.detail);
+      });
 
       window.SDK.setup({
         container: _container,
@@ -61,6 +65,10 @@
 
       function stopAddInfoNode(type, size) {
         window.SDK.stopAddInfoNode();
+      }
+
+      function getInfoNodes() {
+        window.SDK.getInfoNodes();
       }
     </script>
   </body>

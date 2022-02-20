@@ -7,6 +7,7 @@ import {
   TextureLoader,
   Mesh,
   Group,
+  Object3D,
 } from 'three';
 
 import { Subscription } from 'rxjs';
@@ -60,6 +61,14 @@ class Panoramic {
   }
   get mode() {
     return this._mode;
+  }
+  get infoNodes() {
+    const _metas: I_InfoNodeMeta[] = [];
+    this._infoNodeContainer.children.forEach((_node: Object3D) => {
+      const node = _node as InfoNodeSprint;
+      _metas.push(node.meta);
+    });
+    return _metas;
   }
   create(view: Element | null) {
     if (!view) throw new Error('view can not null!');

@@ -22,13 +22,8 @@ export function addSpriteController(
         const sprite = new InfoNodeSprint(_point, null, iconType, iconSize);
         container.add(sprite);
         window.dispatchEvent(
-          new CustomEvent<{
-            id: string;
-            iconType: string;
-            iconSize: number;
-            position: { x: number; y: number; z: number };
-          }>('add-infoNode', {
-            detail: { id: sprite.name, iconType, iconSize, position: _point },
+          new CustomEvent<I_InfoNodeMeta>('add-infoNode', {
+            detail: sprite.meta,
           }),
         );
       }

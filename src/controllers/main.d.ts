@@ -25,3 +25,10 @@ declare interface I_PanoramicMode {
   state: string | undefined;
   params: any | undefined;
 }
+
+declare interface I_InfoNodeMeta {
+  id: string;
+  iconType: string;
+  iconSize: number;
+  position: { x: number; y: number; z: number };
+}

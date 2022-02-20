@@ -22,6 +22,9 @@ window.SDK = {
           case 'clickInfoNode':
             emit('viewer-clickInfoNode', e.data.val.params);
             break;
+          case 'onGetInfoNodes':
+            emit('viewer-getInfoNodes', e.data.val.params);
+            break;
           default:
             console.warn('未定義 Viewer message', e.data);
         }
@@ -39,6 +42,9 @@ window.SDK = {
   },
   changeIconType(id, iconType, size) {
     this._postToViewer('changeIconType', { id, iconType, size });
+  },
+  getInfoNodes() {
+    this._postToViewer('getInfoNodes');
   },
   _postToViewer(command, val) {
     _postToViewer(this._iframe, command, val);
