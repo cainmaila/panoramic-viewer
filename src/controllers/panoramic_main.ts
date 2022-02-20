@@ -156,9 +156,9 @@ class Panoramic extends EventEmitter {
     this._camera.lookAt(new Vector3(0, 0, 0));
   }
   clearInfoNodes() {
-    this._infoNodeContainer.children.forEach((_obj) => {
-      this._infoNodeContainer.remove(_obj);
-    });
+    while (this._infoNodeContainer.children.length) {
+      this._infoNodeContainer.remove(this._infoNodeContainer.children[0]);
+    }
   }
   setInfoNodes(_nodeMetas: I_InfoNodeMeta[]) {
     this.clearInfoNodes();

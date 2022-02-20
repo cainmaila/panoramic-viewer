@@ -47,6 +47,12 @@ const Home = () => {
       case 'loolAtInfoNode':
         panoramic.loolAtInfoNode(val);
         break;
+      case 'setInfoNodes':
+        panoramic.setInfoNodes(val);
+        break;
+      case 'clearInfoNodes':
+        panoramic.clearInfoNodes();
+        break;
       default:
         console.warn('no command', command);
     }

@@ -64,6 +64,12 @@ class PanoramicViewerSDK extends EventEmitter {
   loolAtInfoNode(id) {
     this._postToViewer('loolAtInfoNode', id);
   }
+  setInfoNodes(nodeMetas) {
+    this._postToViewer('setInfoNodes', nodeMetas || []);
+  }
+  clearInfoNodes() {
+    this._postToViewer('clearInfoNodes');
+  }
   _addEventListener(emit) {
     this._iframe.contentWindow.addEventListener('message', (e) => {
       if (e.data?.app === 'Viewer') {
