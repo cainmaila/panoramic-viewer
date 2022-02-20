@@ -17,6 +17,7 @@ import { cameraFovController } from './cameraFovController';
 import { addSpriteController } from './addSpriteController';
 import { clickSpriteController } from './clickSpriteController';
 import { animationFrames$ } from './observables/animationFramesObservable';
+import InfoNodeSprint from './customize/InfoNodeSprint';
 
 class Panoramic {
   private _scene: Scene | undefined;
@@ -127,6 +128,13 @@ class Panoramic {
         }),
       );
     }
+  }
+  changeIconType(id: string, iconType: string, size: number | undefined): void {
+    const _infoNode = this._infoNodeContainer.getObjectByName(
+      id,
+    ) as InfoNodeSprint;
+    _infoNode && (_infoNode.iconType = iconType);
+    size && (_infoNode.size = size);
   }
   addArea() {
     window.dispatchEvent(new Event('addArea'));

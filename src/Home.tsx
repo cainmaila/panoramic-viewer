@@ -25,6 +25,9 @@ const Home = () => {
       case 'stopAddInfoNode':
         panoramic.mode = null;
         break;
+      case 'changeIconType':
+        panoramic.changeIconType(val.id, val.iconType, val.size);
+        break;
       default:
         console.warn('no command', command);
     }

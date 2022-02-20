@@ -37,6 +37,9 @@ window.SDK = {
   stopAddInfoNode() {
     this._postToViewer('stopAddInfoNode');
   },
+  changeIconType(id, iconType, size) {
+    this._postToViewer('changeIconType', { id, iconType, size });
+  },
   _postToViewer(command, val) {
     _postToViewer(this._iframe, command, val);
   },
