@@ -20,7 +20,7 @@ import {
 import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls';
 import { rendererResize } from './renderResizeController';
 import { cameraFovController } from './cameraFovController';
-import { addSpriteController } from './addSpriteController';
+// import { addSpriteController } from './addSpriteController';
 import { animationFrames$ } from './observables/animationFramesObservable';
 /**
  * THREE renderer init
@@ -73,12 +73,12 @@ export function sceneInit(view: Element | null): SceneInit {
   const cameraFovSubscription = cameraFovController(camera);
 
   //cast
-  const addSpritSubscription = addSpriteController(
-    renderer,
-    camera,
-    scene,
-    sphere,
-  );
+  // const addSpritSubscription = addSpriteController(
+  //   renderer,
+  //   camera,
+  //   scene,
+  //   sphere,
+  // );
 
   return {
     scene,
@@ -88,11 +88,9 @@ export function sceneInit(view: Element | null): SceneInit {
       onResizeOb.unsubscribe();
       animationFramesSubscription.unsubscribe();
       cameraFovSubscription.unsubscribe();
-      addSpritSubscription.unsubscribe();
+      // addSpritSubscription.unsubscribe();
     },
-    loadImage(_url) {
-      console.log(123, _url);
-    },
+    loadImage(_url) {},
   };
 }
 

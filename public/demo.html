@@ -32,44 +32,49 @@
       <button onclick="getInfoNodes()">取回列表</button>
     </div>
     <script>
-      const _container = document.getElementById('viewer');
+      const _container = document.getElementById('viewer'); //顯示容器
       const ViewerSDK = new PanoramicViewerSDK({
-        container: _container,
-        viewer: './',
-        imagePath: 'pcx.jpg',
+        //SDK初始化
+        container: _container, //容器
+        viewer: './', //viewer位置[index.html]
+        imagePath: 'pcx.jpg', //環景圖路徑
       });
 
       ViewerSDK.on('viewer-ready', () => {
         console.log('Viewer Ready!');
       });
 
+      //新增事件
       ViewerSDK.on('viewer-addInfoNode', function (addMeta) {
         console.log('新增了', addMeta);
         // setTimeout(function () {
-        //   ViewerSDK.delInfoNode(addMeta.id);
+        //   ViewerSDK.delInfoNode(addMeta.id); //刪除一個node
         // }, 1000);
       });
+      //刪除事件
       ViewerSDK.on('viewer-delInfoNode', function (delId) {
         console.log('刪除了', delId);
       });
+      //點選事件
       ViewerSDK.on('viewer-clickInfoNode', function (clickInfoNode) {
         console.log('點選', clickInfoNode);
         ViewerSDK.loolAtInfoNode(clickInfoNode.id);
       });
+      //取回列表事件
       ViewerSDK.on('viewer-getInfoNodes', function (infoNodes) {
         console.log('返回列表', infoNodes);
       });
 
       function addInfoNode(type, size) {
-        ViewerSDK.addInfoNodeMode(type, size);
+        ViewerSDK.addInfoNodeMode(type, size); //啟動新增模式
       }
 
       function stopAddInfoNode(type, size) {
-        ViewerSDK.stopAddInfoNode();
+        ViewerSDK.stopAddInfoNode(); //關閉新增模式
       }
 
       function getInfoNodes() {
-        ViewerSDK.getInfoNodes();
+        ViewerSDK.getInfoNodes(); //要求取回列表
       }
     </script>
   </body>

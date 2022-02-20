@@ -17,7 +17,9 @@ class InfoNodeSprint extends Sprite {
     this.size = size;
     this.name = name || this.uuid;
     this.center.y = 0;
-    this.position.copy(position);
+    this.position.x = position.x;
+    this.position.y = position.y;
+    this.position.z = position.z;
     this.iconType = iconType;
   }
   set iconType(type: string) {
