@@ -62,44 +62,25 @@ const Home = () => {
       .subscribe(setConfig);
 
     //add an InfoNode
-    const addInfoNode$ = fromEvent(window, 'add-infoNode')
-      .pipe(
-        map((e: Event) => {
-          const _e = e as CustomEvent;
-          return _e.detail;
-        }),
-      )
-      .subscribe((infoNode) => {
-        sdkResultCall('addInfoNode', infoNode);
-        panoramic.mode = null;
-      });
+    const res_addInfoNode = (_meta) => {
+      sdkResultCall('addInfoNode', _meta);
+      panoramic.mode = null;
+    };
+    panoramic.on('add-infoNode', res_addInfoNode);
 
     //del an InfoNode
-    const delInfoNode$ = fromEvent(window, 'del-infoNode')
-      .pipe(
-        map((e: Event) => {
-          const _e = e as CustomEvent;
-          return _e.detail;
-        }),
-      )
-      .subscribe((infoNodeId) => {
-        sdkResultCall('delInfoNode', infoNodeId);
-      });
+    panoramic.on('del-infoNode', (_delId) =>
+      sdkResultCall('delInfoNode', _delId),
+    );
     //click infoNode
-    const clickInfoNode$ = fromEvent(window, 'click-infoNode')
-      .pipe(
-        map((e: Event) => {
-          const _e = e as CustomEvent;
-          return _e.detail;
-        }),
-      )
-      .subscribe((infoNodeId) => {
-        sdkResultCall('clickInfoNode', infoNodeId);
-      });
+    panoramic.on('click-infoNode', (_meta) =>
+      sdkResultCall('clickInfoNode', _meta),
+    );
+
     return () => {
-      addInfoNode$.unsubscribe();
-      delInfoNode$.unsubscribe();
-      clickInfoNode$.unsubscribe();
+      panoramic.off('add-infoNode');
+      panoramic.off('del-infoNode');
+      panoramic.off('click-infoNode');
     };
   }, []);
 

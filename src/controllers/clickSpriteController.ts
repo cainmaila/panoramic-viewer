@@ -1,10 +1,12 @@
 import { Camera, Group, Mesh, Raycaster, WebGLRenderer } from 'three';
+import InfoNodeSprint from './customize/InfoNodeSprint';
 import { pointerupObservable } from './observables/pointerupObservable';
 const raycaster = new Raycaster();
 export function clickSpriteController(
   renderer: WebGLRenderer,
   camera: Camera,
   container: Group,
+  fun?: (meta: I_InfoNodeMeta) => void,
 ) {
   return pointerupObservable(renderer).subscribe((pointer) => {
     raycaster.setFromCamera(pointer, camera);
@@ -13,15 +15,8 @@ export function clickSpriteController(
       const _infoNode = intersects.filter((res) => {
         return res && res.object;
       })[0];
-      const sprite = _infoNode.object;
-      window.dispatchEvent(
-        new CustomEvent<{
-          id: string;
-          position: { x: number; y: number; z: number };
-        }>('click-infoNode', {
-          detail: { id: sprite.name, position: sprite.position },
-        }),
-      );
+      const sprite = _infoNode.object as InfoNodeSprint;
+      fun && fun(sprite.meta);
     }
   });
 }

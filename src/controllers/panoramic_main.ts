@@ -20,8 +20,9 @@ import { addSpriteController } from './addSpriteController';
 import { clickSpriteController } from './clickSpriteController';
 import { animationFrames$ } from './observables/animationFramesObservable';
 import InfoNodeSprint from './customize/InfoNodeSprint';
+import EventEmitter from './customize/EventEmitter';
 
-class Panoramic {
+class Panoramic extends EventEmitter {
   private _scene: Scene | undefined;
   private _camera: PerspectiveCamera | undefined;
   private _renderer: WebGLRenderer | undefined;
@@ -32,6 +33,7 @@ class Panoramic {
   private _sphere: Mesh<SphereGeometry, MeshBasicMaterial> | undefined;
   private _infoNodeContainer: Group;
   constructor() {
+    super();
     this._infoNodeContainer = new Group();
     this.unsubscribe = () => {};
   }
@@ -50,6 +52,7 @@ class Panoramic {
           this._infoNodeContainer,
           this._mode.params.iconType,
           this._mode.params.iconSize,
+          (meta) => this.emit('add-infoNode', meta),
         );
         break;
       default:
@@ -57,6 +60,7 @@ class Panoramic {
           this._renderer,
           this._camera,
           this._infoNodeContainer,
+          (meta) => this.emit('click-infoNode', meta),
         );
     }
   }
@@ -132,11 +136,7 @@ class Panoramic {
     const _infoNode = this._infoNodeContainer.getObjectByName(id);
     if (_infoNode) {
       this._infoNodeContainer.remove(_infoNode);
-      window.dispatchEvent(
-        new CustomEvent<string>('del-infoNode', {
-          detail: id,
-        }),
-      );
+      this.emit('del-infoNode', id);
     }
   }
   changeIconType(id: string, iconType: string, size: number | undefined): void {
@@ -159,7 +159,6 @@ class Panoramic {
     window.dispatchEvent(new Event('addArea'));
   }
   clearStore() {
-    // window.dispatchEvent(new Event('clearStore'));
     localStorage.clear();
   }
   get scene() {
