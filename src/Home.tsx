@@ -44,6 +44,9 @@ const Home = () => {
       case 'getInfoNodes':
         sdkResultCall('onGetInfoNodes', panoramic.infoNodes);
         break;
+      case 'loolAtInfoNode':
+        panoramic.loolAtInfoNode(val);
+        break;
       default:
         console.warn('no command', command);
     }

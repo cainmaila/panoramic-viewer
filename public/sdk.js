@@ -46,6 +46,9 @@ window.SDK = {
   getInfoNodes() {
     this._postToViewer('getInfoNodes');
   },
+  loolAtInfoNode(id) {
+    this._postToViewer('loolAtInfoNode', id);
+  },
   _postToViewer(command, val) {
     _postToViewer(this._iframe, command, val);
   },

@@ -8,6 +8,7 @@ import {
   Mesh,
   Group,
   Object3D,
+  Vector3,
 } from 'three';
 
 import { Subscription } from 'rxjs';
@@ -144,6 +145,15 @@ class Panoramic {
     ) as InfoNodeSprint;
     _infoNode && (_infoNode.iconType = iconType);
     size && (_infoNode.size = size);
+  }
+  loolAtInfoNode(id: string) {
+    if (!this._camera) return;
+    const _obj = this._infoNodeContainer.getObjectByName(id);
+    if (!_obj) return;
+    const _v3 = new Vector3();
+    _v3.copy(_obj.position).normalize().negate();
+    this._camera.position.copy(_v3);
+    this._camera.lookAt(new Vector3(0, 0, 0));
   }
   addArea() {
     window.dispatchEvent(new Event('addArea'));
