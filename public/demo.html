@@ -30,8 +30,6 @@
       <button onclick="addInfoNode('p2')">新增一個p2</button>
       <button onclick="stopAddInfoNode()">取消新增</button>
       <button onclick="getInfoNodes()">取回列表</button>
-      <button onclick="clearInfoNodes()">clear infoNodes</button>
-      <button onclick="reloadInfoNodes()">reload infoNodes</button>
     </div>
     <script>
       const _container = document.getElementById('viewer');
@@ -58,10 +56,8 @@
         console.log('點選', clickInfoNode);
         ViewerSDK.loolAtInfoNode(clickInfoNode.id);
       });
-      let _lists = null;
       ViewerSDK.on('viewer-getInfoNodes', function (infoNodes) {
         console.log('返回列表', infoNodes);
-        _lists = infoNodes;
       });
 
       function addInfoNode(type, size) {
@@ -74,14 +70,6 @@
 
       function getInfoNodes() {
         ViewerSDK.getInfoNodes();
-      }
-
-      function clearInfoNodes() {
-        ViewerSDK.clearInfoNodes();
-      }
-
-      function reloadInfoNodes() {
-        ViewerSDK.setInfoNodes(_lists);
       }
     </script>
   </body>
