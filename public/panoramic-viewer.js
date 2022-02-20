@@ -81,7 +81,7 @@ class PanoramicViewerSDK extends EventEmitter {
             this.emit('viewer-clickInfoNode', e.data.val.params);
             break;
           case 'onGetInfoNodes':
-            emit('viewer-getInfoNodes', e.data.val.params);
+            this.emit('viewer-getInfoNodes', e.data.val.params);
             break;
           default:
             console.warn('未定義 Viewer message', e.data);

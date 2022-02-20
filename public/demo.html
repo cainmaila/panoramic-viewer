@@ -56,8 +56,8 @@
         console.log('點選', clickInfoNode);
         ViewerSDK.loolAtInfoNode(clickInfoNode.id);
       });
-      _container.addEventListener('viewer-getInfoNodes', function (e) {
-        console.log('返回列表', e.detail);
+      ViewerSDK.on('viewer-getInfoNodes', function (infoNodes) {
+        console.log('返回列表', infoNodes);
       });
 
       function addInfoNode(type, size) {
