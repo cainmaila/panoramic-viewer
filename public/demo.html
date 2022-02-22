@@ -61,10 +61,10 @@
       //點選事件
       ViewerSDK.on('viewer-clickInfoNode', function (clickInfoNode) {
         console.log('點選', clickInfoNode);
-        // ViewerSDK.loolAtInfoNode(clickInfoNode.id); //移動到螢幕中心
-        ViewerSDK.project(clickInfoNode.position, function (res) {
-          console.log('螢幕位置', res);
-        });
+        ViewerSDK.loolAtInfoNode(clickInfoNode.id); //移動到螢幕中心
+        // ViewerSDK.project(clickInfoNode.position, function (res) {
+        //   console.log('螢幕位置', res);
+        // });
       });
       //取回列表事件
       ViewerSDK.on('viewer-getInfoNodes', function (infoNodes) {

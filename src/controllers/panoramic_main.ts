@@ -111,7 +111,7 @@ class Panoramic extends EventEmitter {
     controls.enableDamping = true;
     //resize
     const onResizeOb = rendererResize(view, renderer, camera);
-    //animationFrames
+    //animationFrames;
     const animationFramesSubscription = animationFrames$.subscribe((_time) => {
       controls.update();
       renderer.render(scene, camera);
@@ -154,7 +154,7 @@ class Panoramic extends EventEmitter {
     const _v3 = new Vector3();
     _v3.copy(_obj.position).normalize().negate();
     this._camera.position.copy(_v3);
-    this._camera.lookAt(new Vector3(0, 0, 0));
+    // this._camera.lookAt(new Vector3(0, 0, 0));
   }
   clearInfoNodes() {
     while (this._infoNodeContainer.children.length) {
