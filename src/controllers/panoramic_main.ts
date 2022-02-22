@@ -22,7 +22,9 @@ import { animationFrames$ } from './observables/animationFramesObservable';
 import InfoNodeSprint from './customize/InfoNodeSprint';
 import EventEmitter from './customize/EventEmitter';
 import { d3To2 } from './utils/pointTools';
+import { animate, easeOut } from 'popmotion';
 
+const _v3: Vector3 = new Vector3();
 class Panoramic extends EventEmitter {
   private _scene: Scene | undefined;
   private _camera: PerspectiveCamera | undefined;
@@ -147,14 +149,28 @@ class Panoramic extends EventEmitter {
     _infoNode && (_infoNode.iconType = iconType);
     size && (_infoNode.size = size);
   }
-  loolAtInfoNode(id: string) {
+  loolAtInfoNode(
+    id: string,
+    setting: { duration?: number } = {},
+    callBack: Function,
+  ): void {
     if (!this._camera) return;
     const _obj = this._infoNodeContainer.getObjectByName(id);
     if (!_obj) return;
-    const _v3 = new Vector3();
+    const duration = setting.duration || 1000;
     _v3.copy(_obj.position).normalize().negate();
-    this._camera.position.copy(_v3);
-    // this._camera.lookAt(new Vector3(0, 0, 0));
+    animate({
+      from: this._camera.position,
+      to: _v3,
+      duration,
+      ease: easeOut,
+      onUpdate: (latest) => {
+        this._camera && this._camera.position.copy(latest);
+      },
+      onComplete() {
+        callBack && callBack();
+      },
+    });
   }
   clearInfoNodes() {
     while (this._infoNodeContainer.children.length) {

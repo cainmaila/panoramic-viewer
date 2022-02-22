@@ -61,7 +61,15 @@
       //點選事件
       ViewerSDK.on('viewer-clickInfoNode', function (clickInfoNode) {
         console.log('點選', clickInfoNode);
-        ViewerSDK.loolAtInfoNode(clickInfoNode.id); //移動到螢幕中心
+        ViewerSDK.loolAtInfoNode(
+          clickInfoNode.id,
+          {
+            duration: 500, //漸變時間
+          },
+          function () {
+            console.log('移動到目標!'); //onComplete callback [可選]
+          },
+        ); //移動到螢幕中心
         // ViewerSDK.project(clickInfoNode.position, function (res) {
         //   console.log('螢幕位置', res);
         // });

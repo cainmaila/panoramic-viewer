@@ -45,7 +45,11 @@ const Home = () => {
         sdkResultCall('onGetInfoNodes', panoramic.infoNodes);
         break;
       case 'loolAtInfoNode':
-        panoramic.loolAtInfoNode(val);
+        panoramic.loolAtInfoNode(val.id, val.setting, () => {
+          sdkResultCall('loolAtInfoNode-complete', {
+            callBackId: val.callBackId,
+          });
+        });
         break;
       case 'setInfoNodes':
         panoramic.setInfoNodes(val);

@@ -63,8 +63,10 @@ class PanoramicViewerSDK extends EventEmitter {
   getInfoNodes() {
     this._postToViewer('getInfoNodes');
   }
-  loolAtInfoNode(id) {
-    this._postToViewer('loolAtInfoNode', id);
+  loolAtInfoNode(id, setting, callback) {
+    const callBackId = _createUUID();
+    callBackDir[callBackId] = callback || function () {};
+    this._postToViewer('loolAtInfoNode', { id, setting, callBackId });
   }
   setInfoNodes(nodeMetas) {
     this._postToViewer('setInfoNodes', nodeMetas || []);
@@ -95,6 +97,12 @@ class PanoramicViewerSDK extends EventEmitter {
             break;
           case 'onGetInfoNodes':
             this.emit('viewer-getInfoNodes', e.data.val.params);
+            break;
+          case 'loolAtInfoNode-complete':
+            if (callBackDir[e.data.val.params.callBackId]) {
+              callBackDir[e.data.val.params.callBackId]();
+              delete callBackDir[e.data.val.params.callBackId];
+            }
             break;
           case 'projectRes':
             if (callBackDir[e.data.val.params.callBackId]) {
