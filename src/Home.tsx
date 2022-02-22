@@ -22,7 +22,7 @@ const Home = () => {
       '*',
     );
   };
-
+  let projectRes;
   const sdkCommand = ({ target, command, val }) => {
     if (target !== 'Viewer') return;
     switch (command) {
@@ -52,6 +52,10 @@ const Home = () => {
         break;
       case 'clearInfoNodes':
         panoramic.clearInfoNodes();
+        break;
+      case 'project':
+        projectRes = panoramic.project(val.po3d);
+        sdkResultCall('projectRes', { ...val, po2d: projectRes });
         break;
       default:
         console.warn('no command', command);

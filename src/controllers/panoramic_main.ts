@@ -21,6 +21,7 @@ import { clickSpriteController } from './clickSpriteController';
 import { animationFrames$ } from './observables/animationFramesObservable';
 import InfoNodeSprint from './customize/InfoNodeSprint';
 import EventEmitter from './customize/EventEmitter';
+import { d3To2 } from './utils/pointTools';
 
 class Panoramic extends EventEmitter {
   private _scene: Scene | undefined;
@@ -171,6 +172,11 @@ class Panoramic extends EventEmitter {
       );
       this._infoNodeContainer.add(sprite);
     });
+  }
+  project(xyz: { x: number; y: number; z: number }): { x: number; y: number } {
+    if (!this._camera) throw new Error('no camera');
+    if (!this._renderer?.domElement) throw new Error('no domElement');
+    return d3To2(xyz, this._camera, this._renderer.domElement);
   }
   addArea() {
     window.dispatchEvent(new Event('addArea'));

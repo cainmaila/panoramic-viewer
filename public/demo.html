@@ -47,6 +47,9 @@
       //新增事件
       ViewerSDK.on('viewer-addInfoNode', function (addMeta) {
         console.log('新增了', addMeta);
+        ViewerSDK.project(addMeta.position, function (res) {
+          console.log('螢幕位置', res);
+        });
         // setTimeout(function () {
         //   ViewerSDK.delInfoNode(addMeta.id); //刪除一個node
         // }, 1000);
@@ -58,7 +61,10 @@
       //點選事件
       ViewerSDK.on('viewer-clickInfoNode', function (clickInfoNode) {
         console.log('點選', clickInfoNode);
-        ViewerSDK.loolAtInfoNode(clickInfoNode.id);
+        // ViewerSDK.loolAtInfoNode(clickInfoNode.id); //移動到螢幕中心
+        ViewerSDK.project(clickInfoNode.position, function (res) {
+          console.log('螢幕位置', res);
+        });
       });
       //取回列表事件
       ViewerSDK.on('viewer-getInfoNodes', function (infoNodes) {

@@ -34,6 +34,8 @@ class EventEmitter {
   }
 }
 
+const callBackDir = {};
+
 class PanoramicViewerSDK extends EventEmitter {
   constructor(setting) {
     super();
@@ -70,7 +72,12 @@ class PanoramicViewerSDK extends EventEmitter {
   clearInfoNodes() {
     this._postToViewer('clearInfoNodes');
   }
-  _addEventListener(emit) {
+  project(po3d, callBack) {
+    const callBackId = _createUUID();
+    callBackDir[callBackId] = callBack;
+    this._postToViewer('project', { po3d, callBackId });
+  }
+  _addEventListener() {
     this._iframe.contentWindow.addEventListener('message', (e) => {
       if (e.data?.app === 'Viewer') {
         switch (e.data?.val?.command) {
@@ -88,6 +95,15 @@ class PanoramicViewerSDK extends EventEmitter {
             break;
           case 'onGetInfoNodes':
             this.emit('viewer-getInfoNodes', e.data.val.params);
+            break;
+          case 'projectRes':
+            if (callBackDir[e.data.val.params.callBackId]) {
+              callBackDir[e.data.val.params.callBackId]({
+                position: e.data.val.params.po3d,
+                screen: e.data.val.params.po2d,
+              });
+              delete callBackDir[e.data.val.params.callBackId];
+            }
             break;
           default:
             console.warn('未定義 Viewer message', e.data);
@@ -117,4 +133,8 @@ function _emitContainer(container) {
   return (container.emit = function (event, detail) {
     container.dispatchEvent(new CustomEvent(event, { detail }));
   });
+}
+
+function _createUUID(_head = '') {
+  return '' + new Date().getTime() + ~~(Math.random() * 10000);
 }
