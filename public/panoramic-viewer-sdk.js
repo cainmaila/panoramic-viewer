@@ -82,6 +82,14 @@ class PanoramicViewerSDK extends EventEmitter {
     callBackDir[callBackId] = callBack;
     this._postToViewer('project', { po3d, callBackId });
   }
+  getCameraStatus(callBack) {
+    const callBackId = _createUUID();
+    callBackDir[callBackId] = callBack;
+    this._postToViewer('getCameraStatus', { callBackId });
+  }
+  setCameraStatus(status) {
+    this._postToViewer('setCameraStatus', { status });
+  }
   _addEventListener() {
     this._iframe.contentWindow.addEventListener('message', (e) => {
       if (e.data?.app === 'Viewer') {
@@ -116,6 +124,14 @@ class PanoramicViewerSDK extends EventEmitter {
                 position: e.data.val.params.po3d,
                 screen: e.data.val.params.po2d,
               });
+              delete callBackDir[e.data.val.params.callBackId];
+            }
+            break;
+          case 'onetCameraStatus':
+            if (callBackDir[e.data.val.params.callBackId]) {
+              callBackDir[e.data.val.params.callBackId](
+                e.data.val.params.status,
+              );
               delete callBackDir[e.data.val.params.callBackId];
             }
             break;

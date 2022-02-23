@@ -64,6 +64,15 @@ const Home = () => {
         projectRes = panoramic.project(val.po3d);
         sdkResultCall('projectRes', { ...val, po2d: projectRes });
         break;
+      case 'getCameraStatus':
+        sdkResultCall('onetCameraStatus', {
+          status: panoramic.cameraStatus,
+          callBackId: val.callBackId,
+        });
+        break;
+      case 'setCameraStatus':
+        panoramic.cameraStatus = val.status;
+        break;
       default:
         console.warn('no command', command);
     }

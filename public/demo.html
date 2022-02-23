@@ -31,6 +31,8 @@
       <button onclick="stopEdit()">取消新增修改模式</button>
       <button onclick="getInfoNodes()">取回列表</button>
       <button onclick="editInfoNodes()">修改最後點位置</button>
+      <button onclick="getCameraStatus()">取回鏡頭狀態</button>
+      <button onclick="setCameraStatus()">設定鏡頭狀態</button>
     </div>
     <script>
       let _lastInfoNodeId = null; //紀錄最後操作點
@@ -102,6 +104,19 @@
 
       function editInfoNodes() {
         _lastInfoNode && ViewerSDK.editInfoNodeMode(_lastInfoNode); //修改位置
+      }
+
+      let _lastCameraStatus = null; //紀錄最後鏡頭狀態
+      function getCameraStatus() {
+        ViewerSDK.getCameraStatus(function (_status) {
+          //取回鏡頭狀態
+          console.log('取回鏡頭狀態', _status);
+          _lastCameraStatus = _status;
+        });
+      }
+
+      function setCameraStatus() {
+        _lastCameraStatus && ViewerSDK.setCameraStatus(_lastCameraStatus); //設定鏡頭狀態
       }
     </script>
   </body>

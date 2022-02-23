@@ -137,9 +137,8 @@ class Panoramic extends EventEmitter {
     });
     animationFrames$.connect();
     //zoom fov
-    const cameraFovSubscription = cameraFovController(
-      camera,
-      this._infoNodeContainer,
+    const cameraFovSubscription = cameraFovController(this._camera, (_fov) =>
+      this.setCameraFov(_fov),
     );
 
     this.unsubscribe = () => {
@@ -218,6 +217,16 @@ class Panoramic extends EventEmitter {
     if (!this._renderer?.domElement) throw new Error('no domElement');
     return d3To2(xyz, this._camera, this._renderer.domElement);
   }
+  setCameraFov(_fov: number) {
+    if (!this._camera) return;
+    this._camera.fov = _fov;
+    //處理infoNode大小
+    (this._infoNodeContainer.children || []).forEach((_node) => {
+      const _ob = _node as InfoNodeSprint;
+      _ob.setFovScle(_fov / 75); //TODO: 這不是一個好方法，架構也是...
+    });
+    this._camera.updateProjectionMatrix();
+  }
   addArea() {
     window.dispatchEvent(new Event('addArea'));
   }
@@ -232,6 +241,18 @@ class Panoramic extends EventEmitter {
   }
   get renderer() {
     return this._renderer;
+  }
+  get cameraStatus() {
+    if (!this.camera) throw new Error('no camera');
+    const { x, y, z } = this.camera.position;
+    return [x, y, z, this.camera.fov];
+  }
+  set cameraStatus(_status) {
+    if (!this.camera) throw new Error('no camera');
+    this.camera.position.x = _status[0];
+    this.camera.position.y = _status[1];
+    this.camera.position.z = _status[2];
+    this.setCameraFov(_status[3]);
   }
 }
 
