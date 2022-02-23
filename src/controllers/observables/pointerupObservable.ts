@@ -9,18 +9,19 @@ import { Camera, Object3D, Raycaster } from 'three';
  */
 export function pointerupObservable(
   renderer: THREE.WebGLRenderer,
-  buttonType: number = 0,
+  buttonType: number = -1, // if -1 就都傳 0左鍵 1中鍵 2右鍵
 ) {
   return fromEvent(window, 'pointerup').pipe(
     filter((_e) => {
       const e = <PointerEvent>_e;
-      return e.button === buttonType;
+      return buttonType === -1 ? true : e.button === buttonType;
     }),
     map((_e) => {
       const e = <PointerEvent>_e;
       return {
         x: (e.clientX / renderer.domElement.clientWidth) * 2 - 1,
         y: -(e.clientY / renderer.domElement.clientHeight) * 2 + 1,
+        button: e.button,
       };
     }),
   );

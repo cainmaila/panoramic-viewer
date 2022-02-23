@@ -1,4 +1,4 @@
-import { Camera, Group, Mesh, Raycaster, WebGLRenderer } from 'three';
+import { Camera, Group, Raycaster, WebGLRenderer } from 'three';
 import InfoNodeSprint from './customize/InfoNodeSprint';
 import { pointerupObservable } from './observables/pointerupObservable';
 const raycaster = new Raycaster();
@@ -6,7 +6,7 @@ export function clickSpriteController(
   renderer: WebGLRenderer,
   camera: Camera,
   container: Group,
-  fun?: (meta: I_InfoNodeMeta) => void,
+  fun?: (meta: I_InfoNodeMeta, pointer: any) => void,
 ) {
   return pointerupObservable(renderer).subscribe((pointer) => {
     raycaster.setFromCamera(pointer, camera);
@@ -16,7 +16,7 @@ export function clickSpriteController(
         return res && res.object;
       })[0];
       const sprite = _infoNode.object as InfoNodeSprint;
-      fun && fun(sprite.meta);
+      fun && fun(sprite.meta, pointer);
     }
   });
 }

@@ -79,7 +79,8 @@ class Panoramic extends EventEmitter {
           this._renderer,
           this._camera,
           this._infoNodeContainer,
-          (meta) => this.emit('click-infoNode', meta),
+          (meta, pointer) =>
+            this.emit('click-infoNode', { ...meta, button: pointer.button }),
         );
     }
   }

@@ -63,7 +63,7 @@
       });
       //點選事件
       ViewerSDK.on('viewer-clickInfoNode', function (clickInfoNode) {
-        console.log('點選', clickInfoNode);
+        console.log('點選', clickInfoNode); //clickInfoNode.button  0左鍵 1中鍵 2右鍵
         ViewerSDK.loolAtInfoNode(
           clickInfoNode.id,
           {
