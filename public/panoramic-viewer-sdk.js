@@ -48,8 +48,8 @@ class PanoramicViewerSDK extends EventEmitter {
     container.appendChild(this._iframe);
     this._addEventListener(emit);
   }
-  addInfoNodeMode(iconType, iconSize) {
-    this._postToViewer('addInfoNode', { iconType, iconSize });
+  addInfoNodeMode(iconType, iconSize, uuid) {
+    this._postToViewer('addInfoNode', { iconType, iconSize, uuid });
   }
   delInfoNode(id) {
     this._postToViewer('delInfoNode', id);

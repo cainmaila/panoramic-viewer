@@ -45,6 +45,7 @@ class Panoramic extends EventEmitter {
     this._mode = val;
     if (!this._renderer) throw new Error('no renderer');
     if (!this._camera) throw new Error('no camera');
+    const uuid = this._mode?.params.uuid ? '' + this._mode.params.uuid : null;
     switch (this._mode?.state) {
       case 'addInfoNode': //add infoNode
         if (!this._sphere) throw new Error('no sphere');
@@ -53,6 +54,7 @@ class Panoramic extends EventEmitter {
           this._camera,
           this._sphere,
           this._infoNodeContainer,
+          uuid,
           this._mode.params.iconType,
           this._mode.params.iconSize,
           (meta) => this.emit('add-infoNode', meta),

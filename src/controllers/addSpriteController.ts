@@ -14,6 +14,7 @@ export function addSpriteController(
   camera: PerspectiveCamera,
   sphere: Mesh,
   container: Group,
+  uuid: string | null,
   iconType: string,
   iconSize: number = 1,
   fun?: (meta: I_InfoNodeMeta) => void,
@@ -28,7 +29,7 @@ export function addSpriteController(
         _point.multiplyScalar(0.9);
         const sprite = new InfoNodeSprint(
           _point,
-          null,
+          uuid,
           iconType,
           iconSize,
           camera ? camera.fov / 75 : 1,

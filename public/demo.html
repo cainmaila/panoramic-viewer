@@ -80,7 +80,8 @@
       });
 
       function addInfoNode(type, size) {
-        ViewerSDK.addInfoNodeMode(type, size); //啟動新增模式
+        var _uuid = 'node_' + new Date().getTime();
+        ViewerSDK.addInfoNodeMode(type, size, _uuid); //啟動新增模式
       }
 
       function stopAddInfoNode(type, size) {
