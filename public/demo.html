@@ -28,10 +28,12 @@
     <div id="ui">
       <button onclick="addInfoNode('p1',0.7)">新增一個p1</button>
       <button onclick="addInfoNode('p2')">新增一個p2</button>
-      <button onclick="stopAddInfoNode()">取消新增</button>
+      <button onclick="stopEdit()">取消新增修改模式</button>
       <button onclick="getInfoNodes()">取回列表</button>
+      <button onclick="editInfoNodes()">修改最後點位置</button>
     </div>
     <script>
+      let _lastInfoNodeId = null; //紀錄最後操作點
       const _container = document.getElementById('viewer'); //顯示容器
       const ViewerSDK = new PanoramicViewerSDK({
         //SDK初始化
@@ -50,6 +52,7 @@
         ViewerSDK.project(addMeta.position, function (res) {
           console.log('螢幕位置', res);
         });
+        _lastInfoNode = addMeta.id;
         // setTimeout(function () {
         //   ViewerSDK.delInfoNode(addMeta.id); //刪除一個node
         // }, 1000);
@@ -79,17 +82,26 @@
         console.log('返回列表', infoNodes);
       });
 
+      //編輯返回
+      ViewerSDK.on('viewer-editInfoNode', function (editInfoNode) {
+        console.log('編輯了位置', editInfoNode);
+      });
+
       function addInfoNode(type, size) {
         var _uuid = 'node_' + new Date().getTime();
         ViewerSDK.addInfoNodeMode(type, size, _uuid); //啟動新增模式
       }
 
-      function stopAddInfoNode(type, size) {
-        ViewerSDK.stopAddInfoNode(); //關閉新增模式
+      function stopEdit() {
+        ViewerSDK.stopEditMode(); //關閉新增修改模式
       }
 
       function getInfoNodes() {
         ViewerSDK.getInfoNodes(); //要求取回列表
+      }
+
+      function editInfoNodes() {
+        _lastInfoNode && ViewerSDK.editInfoNodeMode(_lastInfoNode); //修改位置
       }
     </script>
   </body>

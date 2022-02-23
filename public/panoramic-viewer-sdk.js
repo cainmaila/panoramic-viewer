@@ -54,8 +54,11 @@ class PanoramicViewerSDK extends EventEmitter {
   delInfoNode(id) {
     this._postToViewer('delInfoNode', id);
   }
-  stopAddInfoNode() {
-    this._postToViewer('stopAddInfoNode');
+  stopEditMode() {
+    this._postToViewer('stopEditMode');
+  }
+  editInfoNodeMode(id) {
+    this._postToViewer('editInfoNodeMode', { id });
   }
   changeIconType(id, iconType, size) {
     this._postToViewer('changeIconType', { id, iconType, size });
@@ -94,6 +97,9 @@ class PanoramicViewerSDK extends EventEmitter {
             break;
           case 'clickInfoNode':
             this.emit('viewer-clickInfoNode', e.data.val.params);
+            break;
+          case 'editInfoNode':
+            this.emit('viewer-editInfoNode', e.data.val.params);
             break;
           case 'onGetInfoNodes':
             this.emit('viewer-getInfoNodes', e.data.val.params);

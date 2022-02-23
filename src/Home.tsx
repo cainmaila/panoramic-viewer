@@ -35,8 +35,11 @@ const Home = () => {
       case 'delInfoNode':
         panoramic.delInfoNode(val);
         break;
-      case 'stopAddInfoNode':
+      case 'stopEditMode':
         panoramic.mode = null;
+        break;
+      case 'editInfoNodeMode':
+        panoramic.mode = { state: 'editInfoNode', params: val };
         break;
       case 'changeIconType':
         panoramic.changeIconType(val.id, val.iconType, val.size);
@@ -89,6 +92,10 @@ const Home = () => {
     //click infoNode
     panoramic.on('click-infoNode', (_meta) =>
       sdkResultCall('clickInfoNode', _meta),
+    );
+    //edit infNode
+    panoramic.on('edit-infoNode', (_meta) =>
+      sdkResultCall('editInfoNode', _meta),
     );
 
     return () => {

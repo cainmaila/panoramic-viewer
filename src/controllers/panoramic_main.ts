@@ -23,6 +23,7 @@ import InfoNodeSprint from './customize/InfoNodeSprint';
 import EventEmitter from './customize/EventEmitter';
 import { d3To2 } from './utils/pointTools';
 import { animate, easeOut } from 'popmotion';
+import { editSprteController } from './editSprteController';
 
 const _v3: Vector3 = new Vector3();
 class Panoramic extends EventEmitter {
@@ -46,6 +47,7 @@ class Panoramic extends EventEmitter {
     if (!this._renderer) throw new Error('no renderer');
     if (!this._camera) throw new Error('no camera');
     const uuid = this._mode?.params.uuid ? '' + this._mode.params.uuid : null;
+    let _obj: Object3D | null | undefined;
     switch (this._mode?.state) {
       case 'addInfoNode': //add infoNode
         if (!this._sphere) throw new Error('no sphere');
@@ -59,6 +61,18 @@ class Panoramic extends EventEmitter {
           this._mode.params.iconSize,
           (meta) => this.emit('add-infoNode', meta),
         );
+        break;
+      case 'editInfoNode': //edit info
+        if (!this._sphere) throw new Error('no sphere');
+        _obj = this._infoNodeContainer.getObjectByName(this._mode.params.id);
+        _obj &&
+          (this._mainSubscription = editSprteController(
+            this._renderer,
+            this._camera,
+            this._sphere,
+            _obj,
+            (meta) => this.emit('edit-infoNode', meta),
+          ));
         break;
       default:
         this._mainSubscription = clickSpriteController(

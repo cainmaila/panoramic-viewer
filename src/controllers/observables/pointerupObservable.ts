@@ -1,5 +1,6 @@
 import { connectable, fromEvent, Subject } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
+import { Camera, Object3D, Raycaster } from 'three';
 /**
  * right pointerup Observable
  * @export
@@ -46,3 +47,25 @@ export const pointerUp$ = (pointer: POINTER = POINTER.LEFT) =>
       return e.button === pointer;
     }),
   );
+
+const raycaster = new Raycaster();
+export const pointerUpByRayObservable = (
+  renderer: THREE.WebGLRenderer,
+  camera: Camera,
+  sphere: Object3D,
+  buttonType: number = 0,
+) => {
+  return pointerupObservable(renderer, buttonType).pipe(
+    map((_po) => {
+      raycaster.setFromCamera(_po, camera);
+      const intersects = raycaster.intersectObject(sphere);
+      if (intersects.length > 0) {
+        return intersects[0].point;
+      }
+      return null;
+    }),
+    filter((_po) => {
+      return !!_po;
+    }),
+  );
+};
