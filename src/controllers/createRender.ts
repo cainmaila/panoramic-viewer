@@ -70,7 +70,7 @@ export function sceneInit(view: Element | null): SceneInit {
   animationFrames$.connect();
 
   //zoom fov
-  const cameraFovSubscription = cameraFovController(camera);
+  // const cameraFovSubscription = cameraFovController(camera);
 
   //cast
   // const addSpritSubscription = addSpriteController(
@@ -87,7 +87,7 @@ export function sceneInit(view: Element | null): SceneInit {
     unsubscribe: () => {
       onResizeOb.unsubscribe();
       animationFramesSubscription.unsubscribe();
-      cameraFovSubscription.unsubscribe();
+      // cameraFovSubscription.unsubscribe();
       // addSpritSubscription.unsubscribe();
     },
     loadImage(_url) {},
