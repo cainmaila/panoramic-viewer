@@ -1,18 +1,22 @@
-import { Sprite, SpriteMaterial, TextureLoader, Vector3 } from 'three';
+import { Sprite, SpriteMaterial } from 'three';
 import TextureLib from './TextureLib';
+const SIZE_SCALE: number = 0.1;
 class InfoNodeSprint extends Sprite {
   private _iconType: string;
   private _size: number = 1;
+  private _fovScale: number = 1;
   constructor(
     position: { x: number; y: number; z: number },
     name: string | null,
     iconType: string,
     size = 1,
+    _fovScale = 1,
   ) {
     const _size = size * 0.1;
     const material = new SpriteMaterial({});
     material.sizeAttenuation = false;
     super(material);
+    this._fovScale = _fovScale;
     this._iconType = iconType;
     this.size = size;
     this.name = name || this.uuid;
@@ -31,7 +35,7 @@ class InfoNodeSprint extends Sprite {
   }
   set size(size: number) {
     this._size = size;
-    this.scale.set(this._size * 0.1, this._size * 0.1, 1);
+    this._reSize();
   }
   get size(): number {
     return this._size;
@@ -43,6 +47,14 @@ class InfoNodeSprint extends Sprite {
       iconSize: this.size,
       position: this.position,
     };
+  }
+  setFovScle(_scle: number = 1) {
+    this._fovScale = _scle;
+    this._reSize();
+  }
+  _reSize() {
+    const _scle = this._size * this._fovScale * SIZE_SCALE;
+    this.scale.set(_scle, _scle, 1);
   }
 }
 

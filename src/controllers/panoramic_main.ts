@@ -120,7 +120,10 @@ class Panoramic extends EventEmitter {
     });
     animationFrames$.connect();
     //zoom fov
-    const cameraFovSubscription = cameraFovController(camera);
+    const cameraFovSubscription = cameraFovController(
+      camera,
+      this._infoNodeContainer,
+    );
 
     this.unsubscribe = () => {
       onResizeOb.unsubscribe();
@@ -129,6 +132,10 @@ class Panoramic extends EventEmitter {
       this._mainSubscription && this._mainSubscription.unsubscribe();
     };
 
+    let _node: InfoNodeSprint | null = null;
+    setInterval(() => {
+      _node = (this._infoNodeContainer.children[0] as InfoNodeSprint) || null;
+    }, 10);
     //================================================================
   }
   loadImage(_url: string) {

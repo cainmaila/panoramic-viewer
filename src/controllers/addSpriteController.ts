@@ -1,11 +1,17 @@
-import { Camera, Group, Mesh, Raycaster, WebGLRenderer, Scene } from 'three';
+import {
+  Group,
+  Mesh,
+  Raycaster,
+  WebGLRenderer,
+  PerspectiveCamera,
+} from 'three';
 import { take } from 'rxjs/operators';
 import { pointerupObservable } from './observables/pointerupObservable';
 import InfoNodeSprint from './customize/InfoNodeSprint';
 const raycaster = new Raycaster();
 export function addSpriteController(
   renderer: WebGLRenderer,
-  camera: Camera,
+  camera: PerspectiveCamera,
   sphere: Mesh,
   container: Group,
   iconType: string,
@@ -20,7 +26,13 @@ export function addSpriteController(
       if (intersects.length > 0) {
         const _point = intersects[0].point;
         _point.multiplyScalar(0.9);
-        const sprite = new InfoNodeSprint(_point, null, iconType, iconSize);
+        const sprite = new InfoNodeSprint(
+          _point,
+          null,
+          iconType,
+          iconSize,
+          camera ? camera.fov / 75 : 1,
+        );
         container.add(sprite);
         fun && fun(sprite.meta);
       }

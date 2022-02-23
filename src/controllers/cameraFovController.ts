@@ -1,5 +1,7 @@
 import { fromEvent } from 'rxjs';
 import { map, startWith, scan, distinctUntilChanged } from 'rxjs/operators';
+import { Group } from 'three';
+import InfoNodeSprint from './customize/InfoNodeSprint';
 
 /**
  * camera Fov Controller
@@ -7,7 +9,10 @@ import { map, startWith, scan, distinctUntilChanged } from 'rxjs/operators';
  * @param {THREE.PerspectiveCamera} camera
  * @return {Subscription}
  */
-export function cameraFovController(camera: THREE.PerspectiveCamera) {
+export function cameraFovController(
+  camera: THREE.PerspectiveCamera,
+  _infoNodeContainer: Group,
+) {
   const mousewheelObserver = fromEvent(window, 'mousewheel').pipe(
     map((_e) => {
       const e = <WheelEvent>_e;
@@ -22,6 +27,10 @@ export function cameraFovController(camera: THREE.PerspectiveCamera) {
   );
   return mousewheelObserver.subscribe((_num: number) => {
     camera.fov = _num;
+    (_infoNodeContainer?.children || []).forEach((_node) => {
+      const _ob = _node as InfoNodeSprint;
+      _ob.setFovScle(_num / 75); //TODO: 這不是一個好方法，架構也是...
+    });
     camera.updateProjectionMatrix();
   });
 }
